@@ -19,6 +19,6 @@ You can view our Project on [GitHub](https://github.com/futuristllc/CognosAI/) f
 ### Documents Related to Cognos
 
 ```markdown
-**[Official Presentation](https://github.com/futuristllc/CognosAI/)**
-**[Official Report](https://github.com/futuristllc/CognosAI/)**
+[Official Presentation](https://github.com/futuristllc/CognosAI/)
+[Official Report](https://github.com/futuristllc/CognosAI/)
 ```
