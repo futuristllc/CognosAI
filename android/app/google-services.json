@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "297615655983",
+    "project_id": "cognos-f3715",
+    "storage_bucket": "cognos-f3715.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:297615655983:android:40661325a26d78a731f2da",
+        "android_client_info": {
+          "package_name": "com.futuristllc.cognos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "297615655983-roanq0bln8inks6jkimurbf6s05lea8c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.futuristllc.cognos",
+            "certificate_hash": "6c98ae5b63b88fe3e054dc90151c30bb06cfc9e8"
+          }
+        },
+        {
+          "client_id": "297615655983-ri6td015aei0jh1o385eqj3ctmoeiunq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjetkA3jAzfdnQmiTGvmEICFzrIQGI3HI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "297615655983-ri6td015aei0jh1o385eqj3ctmoeiunq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
