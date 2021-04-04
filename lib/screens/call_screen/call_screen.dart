@@ -8,7 +8,6 @@ import 'package:cognos/image_provider/user_provider.dart';
 import 'package:cognos/models/calls_data.dart';
 import 'package:cognos/resources/call_method.dart';
 import 'package:cognos/screens/dashboard/dashboard.dart';
-import 'package:cognos/utils/universal_variables.dart';
 import 'package:date_format/date_format.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
 import 'package:flutter/material.dart';
@@ -160,7 +159,7 @@ class _CallScreenState extends State<CallScreen> {
         var formatted_date = formatDate(date, [yyyy, '_', mm, '_', dd ,'_',HH, '_', nn, '_', ss]);
         croppedFile.copy('${dirPath}/FaceData/${meetingid}_${i}_${formatted_date.toString()}.jpg');
         print('Cropped File Path: ${croppedFile}');
-        classifyImage(croppedFile);
+        //classifyImage(croppedFile);
       }
 
       loadImage(_img2).then((img) {
@@ -496,180 +495,196 @@ class _CallScreenState extends State<CallScreen> {
   }
 
   /// Toolbar layout
-  Widget _toolbar() {
-    return Container(
-      alignment: Alignment.bottomCenter,
-      padding: const EdgeInsets.symmetric(vertical: 60),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          RawMaterialButton(
-            onPressed: _onToggleCamera,
-            child: Icon(
-              feed ? Icons.videocam : Icons.videocam_off,
-              color: feed ? Colors.white : Colors.blueAccent,
-              size: 20.0,
-            ),
-            shape: CircleBorder(),
-            elevation: 2.0,
-            fillColor: feed ? Colors.blueAccent : Colors.white,
-            padding: const EdgeInsets.all(15.0),
-          ),
-          RawMaterialButton(
-            onPressed: _onToggleMute,
-            child: Icon(
-              muted ? Icons.mic : Icons.mic_off,
-              color: muted ? Colors.white : Colors.blueAccent,
-              size: 20.0,
-            ),
-            shape: CircleBorder(),
-            elevation: 2.0,
-            fillColor: muted ? Colors.blueAccent : Colors.white,
-            padding: const EdgeInsets.all(15.0),
-          ),
-          RawMaterialButton(
-            onPressed: _onSwitchCamera,
-            child: Icon(
-              Icons.switch_camera,
-              color: Colors.blueAccent,
-              size: 20.0,
-            ),
-            shape: CircleBorder(),
-            elevation: 2.0,
-            fillColor: Colors.white,
-            padding: const EdgeInsets.all(15.0),
-          ),
-
-          RawMaterialButton(
-            onPressed: (){
-                callMethods.endCall(
-                  call: widget.call,
-                );
-                /*Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => DashBoard(faceExpr: faceExpression),
-                  ),
-                );*/
-              },
-            child: Icon(
-              Icons.call_end,
-              color: Colors.white,
-              size: 20.0,
-            ),
-            shape: CircleBorder(),
-            elevation: 2.0,
-            fillColor: Colors.redAccent,
-            padding: const EdgeInsets.all(15.0),
-          ),
-        ],
-      ),
-    );
-  }
-
-  /*void _settingModalBottomSheet(context, feed, muted, shouldCapture) {
-    showModalBottomSheet(context: context, builder: (BuildContext bc) {
-      return new Container(
-        //could change this to Color(0xFF737373),
-        //so you don't have to change MaterialApp canvasColor
-        child: new Container(
-          decoration: new BoxDecoration(
-              color: Colors.white,
-              borderRadius: new BorderRadius.only(
-                  topLeft: const Radius.circular(10.0),
-                  topRight: const Radius.circular(10.0))),
-          child: new Wrap(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(top:20, bottom:20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          RawMaterialButton(
-                            onPressed: checkScreenshot,
-                            child: Icon(
-                              Icons.fullscreen,
-                              color: colorVision(),
-                              size: 20.0,
-                            ),
-                            shape: CircleBorder(),
-                            elevation: 2.0,
-                            fillColor: shouldCapture?Colors.blueAccent:Colors.white,
-                            padding: const EdgeInsets.all(10.0),
-                          ),
-                        ],
+  Widget _toolbar(){
+    return OrientationBuilder(
+      builder: (context,orientation){
+        return orientation == Orientation.portrait ? Padding(
+          padding: EdgeInsets.only(bottom: 15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  RawMaterialButton(
+                    onPressed: (){
+                      callMethods.endCall(
+                        call: widget.call,
+                      );
+                      /*Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DashBoard(faceExpr: faceExpression),
                       ),
+                    );*/
+                    },
+                    child: Icon(
+                      Icons.call_end,
+                      color: Colors.white,
+                      size: 25.0,
                     ),
-                    /*Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                CircleAvatar(radius: 24 ,backgroundColor: Colors.green.shade400, child: Icon(Icons.location_on,size: 27, color: Colors.white,)),
-                                Padding(
-                                    padding: EdgeInsets.only(top:7),
-                                    child: Text('Location', style: TextStyle(fontSize: 14, color: Colors.black54))),
-                              ],
-                            ),
-                            onTap: (){
-                              //pickImage(source: ImageSource.gallery);
-                            },
-                          ),
-                          InkWell(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                CircleAvatar(radius: 24 ,backgroundColor: Colors.indigoAccent, child: Icon(Icons.add_call,size: 27, color: Colors.white,)),
-                                Padding(
-                                    padding: EdgeInsets.only(top:7),
-                                    child: Text('Meetings', style: TextStyle(fontSize: 14, color: Colors.black54))),
-                              ],
-                            ),
-                            onTap: (){
-                              //pickImage(source: ImageSource.gallery);
-                            },
-                          ),
-                          InkWell(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                CircleAvatar(radius: 24 ,backgroundColor: Colors.orange, child: Icon(Icons.library_music,size: 27, color: Colors.white,)),
-                                Padding(
-                                    padding: EdgeInsets.only(top:7),
-                                    child: Text('Audio', style: TextStyle(fontSize: 14, color: Colors.black54))),
-                              ],
-                            ),
-                            onTap: (){
-                              //pickImage(source: ImageSource.gallery);
-                            },
-                          ),
-                        ],
-                      ),
-                    ),*/
-                  ],
-                ),
-              )
+                    shape: CircleBorder(),
+                    elevation: 2.0,
+                    fillColor: Colors.redAccent,
+                    padding: const EdgeInsets.all(15.0),
+                  ),
+                ],
+              ),
+              Padding(padding: EdgeInsets.all(10),),
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RawMaterialButton(
+                    onPressed: _onToggleCamera,
+                    child: Icon(
+                      feed?Icons.videocam : Icons.videocam_off,
+                      color: feed?Colors.white : Colors.blueAccent,
+                      size: 20.0,
+                    ),
+                    shape: CircleBorder(),
+                    elevation: 2.0,
+                    fillColor: feed?Colors.blueAccent:Colors.white,
+                    padding: const EdgeInsets.all(12.0),
+                  ),
+
+                  RawMaterialButton(
+                    onPressed: _onToggleMute,
+                    child: Icon(
+                      muted ? Icons.mic : Icons.mic_off,
+                      color: muted ? Colors.white : Colors.blueAccent,
+                      size: 20.0,
+                    ),
+                    shape: CircleBorder(),
+                    elevation: 2.0,
+                    fillColor: muted ? Colors.blueAccent : Colors.white,
+                    padding: const EdgeInsets.all(12.0),
+                  ),
+
+                  RawMaterialButton(
+                    onPressed: _onSwitchCamera,
+                    child: Icon(
+                      Icons.switch_camera,
+                      color: Colors.blueAccent,
+                      size: 20.0,
+                    ),
+                    shape: CircleBorder(),
+                    elevation: 2.0,
+                    fillColor: Colors.white,
+                    padding: const EdgeInsets.all(12.0),
+                  ),
+
+                  RawMaterialButton(
+                    onPressed: checkScreenshot,
+                    child: Icon(
+                      shouldCapture?Icons.widgets : Icons.widgets_outlined,
+                      color: shouldCapture?Colors.white:Colors.blueAccent ,
+                      size: 20.0,
+                    ),
+                    shape: CircleBorder(),
+                    elevation: 2.0,
+                    fillColor: shouldCapture?Colors.blueAccent:Colors.white,
+                    padding: const EdgeInsets.all(12.0),
+                  ),
+                ],
+              ),
             ],
           ),
-        ),
-      );
-    });
-  }*/
+        ) :
+        Padding(
+          padding: EdgeInsets.only(bottom: 15),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  RawMaterialButton(
+                    onPressed: _onToggleCamera,
+                    child: Icon(
+                      feed?Icons.videocam : Icons.videocam_off,
+                      color: feed?Colors.white : Colors.blueAccent,
+                      size: 20.0,
+                    ),
+                    shape: CircleBorder(),
+                    elevation: 2.0,
+                    fillColor: feed?Colors.blueAccent:Colors.white,
+                    padding: const EdgeInsets.all(12.0),
+                  ),
+
+                  RawMaterialButton(
+                    onPressed: _onToggleMute,
+                    child: Icon(
+                      muted ? Icons.mic : Icons.mic_off,
+                      color: muted ? Colors.white : Colors.blueAccent,
+                      size: 20.0,
+                    ),
+                    shape: CircleBorder(),
+                    elevation: 2.0,
+                    fillColor: muted ? Colors.blueAccent : Colors.white,
+                    padding: const EdgeInsets.all(12.0),
+                  ),
+
+                  RawMaterialButton(
+                    onPressed: (){
+                      callMethods.endCall(
+                        call: widget.call,
+                      );
+                      /*Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => DashBoard(faceExpr: faceExpression),
+                      ),
+                    );*/
+                    },
+                    child: Icon(
+                      Icons.call_end,
+                      color: Colors.white,
+                      size: 25.0,
+                    ),
+                    shape: CircleBorder(),
+                    elevation: 2.0,
+                    fillColor: Colors.redAccent,
+                    padding: const EdgeInsets.all(15.0),
+                  ),
+
+                  RawMaterialButton(
+                    onPressed: _onSwitchCamera,
+                    child: Icon(
+                      Icons.switch_camera,
+                      color: Colors.blueAccent,
+                      size: 20.0,
+                    ),
+                    shape: CircleBorder(),
+                    elevation: 2.0,
+                    fillColor: Colors.white,
+                    padding: const EdgeInsets.all(12.0),
+                  ),
+
+                  RawMaterialButton(
+                    onPressed: checkScreenshot,
+                    child: Icon(
+                      shouldCapture?Icons.widgets : Icons.widgets_outlined,
+                      color: shouldCapture?Colors.white:Colors.blueAccent ,
+                      size: 20.0,
+                    ),
+                    shape: CircleBorder(),
+                    elevation: 2.0,
+                    fillColor: shouldCapture?Colors.blueAccent:Colors.white,
+                    padding: const EdgeInsets.all(12.0),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   @override
   void dispose() {
@@ -692,30 +707,10 @@ class _CallScreenState extends State<CallScreen> {
           children: <Widget>[
             _viewRows(),
             // _panel(),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                RawMaterialButton(
-                  onPressed: checkScreenshot,
-                  child: Icon(
-                    Icons.fullscreen,
-                    color: shouldCapture?Colors.white:Colors.blueAccent ,
-                    size: 20.0,
-                  ),
-                  shape: CircleBorder(),
-                  elevation: 2.0,
-                  fillColor: shouldCapture?Colors.blueAccent:Colors.white,
-                  padding: const EdgeInsets.all(15.0),
-                ),
-                _toolbar(),
-              ],
-            ),
+            _toolbar(),
           ],
         ),
       ),
     );
   }
-
-
 }
