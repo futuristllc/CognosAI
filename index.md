@@ -1,14 +1,29 @@
 ## Welcome to Cognos AI by ### Team Futurist
 
-You can use the [editor on GitHub](https://github.com/futuristllc/CognosAI/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
-
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
-
-### Markdown
-
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+[Cognos](https://github.com/futuristllc/CognosAI) is ML and AI based project developed by Futurist LLC. Cognos is a Smart Communication and Meet Application with AI powered Voice and Video Calling. It also includes some advanced features like Emotion Recognition during Video Calls and Meetings. 
 
 ```markdown
+Very Soon, you will get to experience advanced Vision Services that includes: 
+
+1. PDF Maker 
+2. Text Recognition 
+3. OCR 
+4. Spam Detection 
+5. Text to Speech and Speech to Text 
+6. Voice and Text Translation 
+7. Scene Recognizer 
+8. Object Searching 
+9. Transliteration
+```
+You can view our Project on [GitHub](https://github.com/futuristllc/CognosAI/) for more information.
+### Documents Related to Cognos
+
+```markdown
+**[Official Presentation]**(https://github.com/futuristllc/CognosAI/)
+**[Official Report]**(https://github.com/futuristllc/CognosAI/)
+```
+
+```
 Syntax highlighted code block
 
 # Header 1
@@ -25,7 +40,7 @@ Syntax highlighted code block
 
 [Link](url) and ![Image](src)
 ```
-
+```
 For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
 
 ### Jekyll Themes
@@ -35,3 +50,6 @@ Your Pages site will use the layout and styles from the Jekyll theme you have se
 ### Support or Contact
 
 Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+```
+```
+
