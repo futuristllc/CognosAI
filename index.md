@@ -1,4 +1,4 @@
-## Welcome to Cognos AI by ### Team Futurist
+## Welcome to Cognos AI by [Team Futurist](https://futuristllc.github.io)
 
 [Cognos](https://github.com/futuristllc/CognosAI) is ML and AI based project developed by Futurist LLC. Cognos is a Smart Communication and Meet Application with AI powered Voice and Video Calling. It also includes some advanced features like Emotion Recognition during Video Calls and Meetings. 
 
@@ -19,8 +19,8 @@ You can view our Project on [GitHub](https://github.com/futuristllc/CognosAI/) f
 ### Documents Related to Cognos
 
 ```markdown
-**[Official Presentation]**(https://github.com/futuristllc/CognosAI/)
-**[Official Report]**(https://github.com/futuristllc/CognosAI/)
+**[Official Presentation](https://github.com/futuristllc/CognosAI/)**
+**[Official Report](https://github.com/futuristllc/CognosAI/)**
 ```
 
 ```
@@ -51,5 +51,5 @@ Your Pages site will use the layout and styles from the Jekyll theme you have se
 
 Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
 ```
-```
+
 
