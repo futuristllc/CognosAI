@@ -21,7 +21,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as  http;
+import 'package:flutter_downloader/flutter_downloader.dart';
 
 class ChatScreen extends StatefulWidget {
 
@@ -58,7 +61,10 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     super.initState();
-
+    WidgetsFlutterBinding.ensureInitialized();
+    FlutterDownloader.initialize(
+        debug: true // optional: set false to disable printing logs to console
+    );
     _repository.getCurrentUser().then((user) {
       _currentUserId = user.uid;
 
@@ -150,7 +156,13 @@ class _ChatScreenState extends State<ChatScreen> {
               ),
               IconButton(
                 icon: Icon(Icons.phone),
-                onPressed: () {},
+                onPressed: () async =>
+                await Permissions.cameraAndMicrophonePermissionsGranted()
+                    ? VoiceUtils.vdial(
+                  from: sender,
+                  to: widget.receiver,
+                  context: context,
+                ):{},
               ),
               IconButton(
                 icon: Icon(Icons.more_vert),
@@ -201,13 +213,47 @@ class _ChatScreenState extends State<ChatScreen> {
 
     return message.type == MESSAGE_TYPE_IMAGE
         ? InkWell(child: Hero(tag: "imageView", child: CachedImage(message.photoUrl)), onTap: (){viewImage(context, message.photoUrl);})
-        : message.type == MESSAGE_TYPE_DOC? Text(
-          'DOCUMENT',
-          style: TextStyle(
-            color: Colors.black,
-            fontSize: 16.0,
-          ),
-        )
+        : message.type == MESSAGE_TYPE_DOC? Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Icon(
+                    Icons.insert_drive_file,
+                    color: Colors.blueAccent,
+                    size: 40,
+                  ),
+                  Text(
+                    "FILE",
+                    style: TextStyle(
+                      color: Colors.blueAccent,
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold
+                    ),
+                  ),
+                ],
+              ),
+              message.senderId==_currentUserId? InkWell(
+                onTap: (){
+
+                },
+                child: Card(
+                  color: Colors.blueAccent,
+                  child: SizedBox(
+                    width: 60,
+                    height: 30,
+                    child: Icon(
+                      Icons.download_sharp,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  ),
+                ),
+              ): SizedBox.shrink(),
+            ],
+          )
         : Text(
               message.message,
               style: TextStyle(
@@ -215,6 +261,7 @@ class _ChatScreenState extends State<ChatScreen> {
               fontSize: 16.0,
           ));
   }
+
 
   void pickImage({@required ImageSource source}) async {
     File selectedImage = await Utils.pickImage(source: source);
@@ -292,7 +339,17 @@ class _ChatScreenState extends State<ChatScreen> {
         alignment: Alignment.topRight,
         nip: BubbleNip.rightTop,
         color: Color.fromRGBO(225, 255, 199, 1.0),
-        child: Column(
+        child: Wrap(
+          alignment: WrapAlignment.end,
+          children: <Widget>[
+            getMessage(message),
+            Padding(
+              padding: const EdgeInsets.only(left: 9.0, right: 3.0, top: 3.0, bottom: 0),
+              child: Text(msgTime, style: TextStyle(fontSize: 10, color: Colors.grey))
+            ),
+          ],
+        ),
+        /*Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisAlignment: MainAxisAlignment.end,
@@ -303,7 +360,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 child: Text(msgTime, style: TextStyle(fontSize: 10, color: Colors.grey))
             )
           ],
-        ),
+        ),*/
         // getMessage(message),
       ),
     );
@@ -318,16 +375,14 @@ class _ChatScreenState extends State<ChatScreen> {
         margin: BubbleEdges.only(top: 10),
         alignment: Alignment.topLeft,
         nip: BubbleNip.leftTop,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
+        child:  Wrap(
+          alignment: WrapAlignment.end,
+          children: <Widget>[
             getMessage(message),
             Padding(
-              padding: EdgeInsets.only(top: 3),
-              child: Text(msgTime, style: TextStyle(fontSize: 10, color: Colors.grey))
-            )
+                padding: const EdgeInsets.only(left: 9.0, right: 3.0, top: 3.0, bottom: 0),
+                child: Text(msgTime, style: TextStyle(fontSize: 10, color: Colors.grey))
+            ),
           ],
         ),
       ),

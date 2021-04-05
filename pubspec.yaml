@@ -66,6 +66,8 @@ dependencies:
   flutter_native_image: any
   time: 1.3.0
   tflite: ^1.0.4
+  http: ^0.12.0+2
+  flutter_downloader: ^1.5.2
 
 dev_dependencies:
   flutter_test:

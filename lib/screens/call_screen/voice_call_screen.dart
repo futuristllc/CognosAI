@@ -6,7 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cognos/configs/agora_configs.dart';
 import 'package:cognos/image_provider/user_provider.dart';
 import 'package:cognos/models/calls_data.dart';
+import 'package:cognos/models/voice_call.dart';
 import 'package:cognos/resources/call_method.dart';
+import 'package:cognos/resources/voice_call.dart';
 import 'package:cognos/screens/dashboard/dashboard.dart';
 import 'package:date_format/date_format.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
@@ -21,38 +23,24 @@ import 'package:screenshot/screenshot.dart';
 import 'package:tflite/tflite.dart';
 import 'package:toast/toast.dart';
 
-class CallScreen extends StatefulWidget {
-  final Call call;
+class VoiceCall extends StatefulWidget {
+  final Voice voice;
 
-  CallScreen({
-    @required this.call,
+  VoiceCall({
+    @required this.voice,
   });
 
   @override
-  _CallScreenState createState() => _CallScreenState();
+  _VoiceCallState createState() => _VoiceCallState();
 }
 
-class _CallScreenState extends State<CallScreen> {
+class _VoiceCallState extends State<VoiceCall> {
   static final _users = <int>[];
   final _infoStrings = <String>[];
   bool muted = false;
-  bool feed = false;
-  bool vision = false;
-  var timer;
-  bool _loading = false;
-
-  List<Rect> rect = new List<Rect>();
-  List _outputs;
-  List faceExpression = [];
-
-  File _img1, _img2;
-  final picker = ImagePicker();
-  ui.Image image;
 
   bool shouldCapture = true;
-
-  final CallMethods callMethods = CallMethods();
-  ScreenshotController screenshotController = ScreenshotController();
+  final VoiceCallMethods voiceMethods = VoiceCallMethods();
 
   UserProvider userProvider;
   StreamSubscription callStreamSubscription;
@@ -62,162 +50,8 @@ class _CallScreenState extends State<CallScreen> {
     super.initState();
     addPostFrameCallback();
     initializeAgora();
-    _loading = true;
-    checkScreenshot();
-    loadModel().then((value) {
-      setState(() {
-        _loading = false;
-      });
-    });
+
     //timer = Timer.periodic(Duration(seconds: 10), (Timer t) => _takeScreenShot());
-  }
-
-  static Future<String> loadModel() async {
-    return Tflite.loadModel(
-      model: "assets/emotion_ai.tflite",
-      labels: "assets/emotion_ai.txt",
-    );
-  }
-
-  Future<void> classifyImage(File image) async {
-    var output = await Tflite.runModelOnImage(
-      path: image.path,
-      numResults: 4,
-      threshold: 0.005,
-      imageMean: 127.5,
-      imageStd: 127.5,
-    );
-    setState(() {
-      _img1 = image;
-      _loading = false;
-      _outputs = output;
-    });
-    print("inside classify image *********************************");
-    print((_outputs[0]["label"]).runtimeType);
-    print(_outputs[0]["label"]);
-    faceExpression.add(_outputs[0]["label"].toString());
-    print('${faceExpression}');
-    Toast.show('${faceExpression}', context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
-  }
-
-  checkScreenshot(){
-    print('in checkSS');
-    setState(() {
-      shouldCapture = !shouldCapture;
-      print(shouldCapture);
-
-      print('in take SS IF');
-      Timer.periodic(Duration(seconds: 30), (timer) {
-        if (!shouldCapture) {
-          timer.cancel();
-        }
-        _takeScreenShot();
-      });
-        //timer = Timer.periodic(Duration(seconds: 30), (Timer t) => _takeScreenShot());
-    });
-  }
-
-  Future<ui.Image> loadImage(File image) async {
-    var img = await image.readAsBytes();
-    return await decodeImageFromList(img);
-  }
-
-
-  Future getImage(String screenShotPath) async {
-    _img2 = File(screenShotPath);
-    setState(() {
-      rect = List<Rect>();
-    });
-
-    var dirPath;
-    createFolderInAppDocDir('CognosAI','FaceData').then((String path) async {
-      setState(() {
-        dirPath = path;
-      });
-      print('Path: $dirPath');
-
-      var visionImage = FirebaseVisionImage.fromFile(_img2);
-      var options = new FaceDetectorOptions(
-        enableTracking: true,
-        enableLandmarks: true,
-        enableClassification: true,
-        mode: FaceDetectorMode.accurate,
-      );
-      var faceDetector = FirebaseVision.instance.faceDetector(options);
-      List<Face> faces = await faceDetector.processImage(visionImage);
-      int i = 0;
-      String meetingid = 'meeting';
-      for (Face f in faces) {
-        rect.add(f.boundingBox);
-        print(rect);
-        i++;
-        print('Probabilities: ${f.leftEyeOpenProbability},${f.rightEyeOpenProbability},${f.headEulerAngleY},');
-        print('${f.headEulerAngleZ},${f.smilingProbability},${f.trackingId}');
-        File croppedFile = await FlutterNativeImage.cropImage(_img2.path, f.boundingBox.left.toInt(),
-            f.boundingBox.top.toInt(), f.boundingBox.width.toInt(), f.boundingBox.height.toInt());
-        DateTime now = new DateTime.now();
-        DateTime date = new DateTime(now.year, now.month, now.day ,now.hour,now.minute , now.second);
-        print(formatDate(date, [yyyy, '', mm, '', dd ,'',HH, '', nn, '_', ss]));
-        var formatted_date = formatDate(date, [yyyy, '_', mm, '_', dd ,'_',HH, '_', nn, '_', ss]);
-        croppedFile.copy('${dirPath}/FaceData/${meetingid}_${i}_${formatted_date.toString()}.jpg');
-        print('Cropped File Path: ${croppedFile}');
-        Toast.show('Image Cropped', context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
-        classifyImage(croppedFile);
-      }
-
-      loadImage(_img2).then((img) {
-        setState(() {
-          this.image = img;
-        });
-      });
-    });
-  }
-
-  Future<void> _takeScreenShot() async {
-    print('in take SS');
-    var _path;
-    DateTime now = new DateTime.now();
-    DateTime date = new DateTime(now.year, now.month, now.day ,now.hour,now.minute , now.second);
-    //print(date);
-    print(formatDate(date, [yyyy, '_', mm, '_', dd ,'_',HH, '_', nn, '_', ss]));
-    var formattedDate = formatDate(date, [yyyy, '_', mm, '_', dd ,'_',HH, '_', nn, '_', ss]);
-    String screenShotPath = await NativeScreenshot.takeScreenshot();
-    print(screenShotPath);
-    print('captured');
-    getImage(screenShotPath);
-    /*screenshotController
-        .capture(delay: Duration(milliseconds: 10))
-        .then((File image) async {
-      print("Capture Done");
-      createFolderInAppDocDir('CognosAI','Screenshots').then((String result){
-        setState(() {
-          _path = result;
-          print('Path: $_path');
-          image.copy('$_path/FaceData/${formattedDate}.jpg');
-        });
-      });
-      final result =
-      await ImageGallerySaver.saveImage(image.readAsBytesSync());
-      print("File Saved to Gallery");
-    }).catchError((onError) {
-      print(onError);
-    });*/
-  }
-
-  static Future<String> createFolderInAppDocDir(String folderName, String subFolderName) async {
-    final _appDocDir = await getExternalStorageDirectory();
-    //print('Dir: $_appDocDir');
-    final Directory _appDocDirFolder =  Directory('${_appDocDir.path}/$folderName/');
-    final Directory _subDocDirFolder =  Directory('${_appDocDirFolder.path}/$subFolderName/');
-
-    if(await _appDocDirFolder.exists() && await _subDocDirFolder.exists()){ //if folder already exists return path
-      return _appDocDirFolder.path.toString();
-    }
-    else{//if folder not exists create folder and then return its path
-      final Directory _appDocDirNewFolder = await _appDocDirFolder.create(recursive: true);
-      final Directory _subDocDirNewFolder = await _subDocDirFolder.create(recursive: true);
-      return _appDocDirNewFolder.path.toString();
-    }
   }
 
   Future<void> initializeAgora() async {
@@ -236,7 +70,7 @@ class _CallScreenState extends State<CallScreen> {
     await AgoraRtcEngine.enableWebSdkInteroperability(true);
     await AgoraRtcEngine.setParameters(
         '''{\"che.video.lowBitRateStreamParameter\":{\"width\":320,\"height\":180,\"frameRate\":15,\"bitRate\":140}}''');
-    await AgoraRtcEngine.joinChannel(null, widget.call.channelId, null, 0);
+    await AgoraRtcEngine.joinChannel(null, widget.voice.channelId, null, 0);
 
   }
 
@@ -244,8 +78,8 @@ class _CallScreenState extends State<CallScreen> {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       userProvider = Provider.of<UserProvider>(context, listen: false);
 
-      callStreamSubscription = callMethods
-          .callStream(uid: userProvider.getUser.uid)
+      callStreamSubscription = voiceMethods
+          .vcallStream(uid: userProvider.getUser.uid)
           .listen((DocumentSnapshot ds) {
         // defining the logic
         switch (ds.data) {
@@ -263,7 +97,7 @@ class _CallScreenState extends State<CallScreen> {
   /// Create agora sdk instance and initialize
   Future<void> _initAgoraRtcEngine() async {
     await AgoraRtcEngine.create(APP_ID);
-    await AgoraRtcEngine.enableVideo();
+    //await AgoraRtcEngine.enableVideo();
   }
 
   /// Add agora event handlers
@@ -309,7 +143,7 @@ class _CallScreenState extends State<CallScreen> {
     };
 
     AgoraRtcEngine.onUserOffline = (int a, int b) {
-      callMethods.endCall(call: widget.call);
+      voiceMethods.vendCall(voice: widget.voice);
       setState(() {
         final info = 'onUserOffline: a: ${a.toString()}, b: ${b.toString()}';
         _infoStrings.add(info);
@@ -363,7 +197,7 @@ class _CallScreenState extends State<CallScreen> {
   /// Helper function to get list of native views
   List<Widget> _getRenderViews() {
     final List<AgoraRenderWidget> list = [
-      AgoraRenderWidget(0, local: true, preview: true),
+      AgoraRenderWidget(0, local: true, preview: false),
     ];
     _users.forEach((int uid) => list.add(AgoraRenderWidget(uid)));
     return list;
@@ -422,56 +256,6 @@ class _CallScreenState extends State<CallScreen> {
     return Container();
   }
 
-  /// Info panel to show logs
-  Widget _panel() {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 48),
-      alignment: Alignment.bottomCenter,
-      child: FractionallySizedBox(
-        heightFactor: 0.5,
-        child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 48),
-          child: ListView.builder(
-            reverse: true,
-            itemCount: _infoStrings.length,
-            itemBuilder: (BuildContext context, int index) {
-              if (_infoStrings.isEmpty) {
-                return null;
-              }
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 3,
-                  horizontal: 10,
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Flexible(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 2,
-                          horizontal: 5,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.yellowAccent,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: Text(
-                          _infoStrings[index],
-                          style: TextStyle(color: Colors.blueGrey),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
   void _onToggleMute() {
     setState(() {
       muted = !muted;
@@ -479,7 +263,7 @@ class _CallScreenState extends State<CallScreen> {
     AgoraRtcEngine.muteLocalAudioStream(muted);
   }
 
-  void _onToggleCamera() {
+  /*void _onToggleCamera() {
     setState(() {
       feed = !feed;
     });
@@ -495,7 +279,7 @@ class _CallScreenState extends State<CallScreen> {
 
   void _onSwitchCamera() {
     AgoraRtcEngine.switchCamera();
-  }
+  }*/
 
   /// Toolbar layout
   Widget _toolbar(){
@@ -513,8 +297,8 @@ class _CallScreenState extends State<CallScreen> {
                 children: [
                   RawMaterialButton(
                     onPressed: (){
-                      callMethods.endCall(
-                        call: widget.call,
+                      voiceMethods.vendCall(
+                        voice: widget.voice,
                       );
                       /*Navigator.push(
                       context,
@@ -536,7 +320,7 @@ class _CallScreenState extends State<CallScreen> {
                 ],
               ),
               Padding(padding: EdgeInsets.all(10),),
-              Row(
+              /*Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
@@ -592,7 +376,7 @@ class _CallScreenState extends State<CallScreen> {
                     padding: const EdgeInsets.all(12.0),
                   ),
                 ],
-              ),
+              ),*/
             ],
           ),
         ) :
@@ -606,7 +390,7 @@ class _CallScreenState extends State<CallScreen> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  RawMaterialButton(
+                  /*RawMaterialButton(
                     onPressed: _onToggleCamera,
                     child: Icon(
                       feed?Icons.videocam : Icons.videocam_off,
@@ -617,7 +401,7 @@ class _CallScreenState extends State<CallScreen> {
                     elevation: 2.0,
                     fillColor: feed?Colors.blueAccent:Colors.white,
                     padding: const EdgeInsets.all(12.0),
-                  ),
+                  ),*/
 
                   RawMaterialButton(
                     onPressed: _onToggleMute,
@@ -632,30 +416,7 @@ class _CallScreenState extends State<CallScreen> {
                     padding: const EdgeInsets.all(12.0),
                   ),
 
-                  RawMaterialButton(
-                    onPressed: (){
-                      callMethods.endCall(
-                        call: widget.call,
-                      );
-                      /*Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DashBoard(faceExpr: faceExpression),
-                      ),
-                    );*/
-                    },
-                    child: Icon(
-                      Icons.call_end,
-                      color: Colors.white,
-                      size: 25.0,
-                    ),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: Colors.redAccent,
-                    padding: const EdgeInsets.all(15.0),
-                  ),
-
-                  RawMaterialButton(
+                  /*RawMaterialButton(
                     onPressed: _onSwitchCamera,
                     child: Icon(
                       Icons.switch_camera,
@@ -679,7 +440,7 @@ class _CallScreenState extends State<CallScreen> {
                     elevation: 2.0,
                     fillColor: shouldCapture?Colors.blueAccent:Colors.white,
                     padding: const EdgeInsets.all(12.0),
-                  ),
+                  ),*/
                 ],
               ),
             ],
@@ -697,7 +458,6 @@ class _CallScreenState extends State<CallScreen> {
     AgoraRtcEngine.leaveChannel();
     AgoraRtcEngine.destroy();
     callStreamSubscription.cancel();
-    Tflite.close();
     super.dispose();
   }
 
@@ -710,7 +470,6 @@ class _CallScreenState extends State<CallScreen> {
           children: <Widget>[
             _viewRows(),
             // _panel(),
-
             _toolbar(),
           ],
         ),
