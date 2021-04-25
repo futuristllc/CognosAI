@@ -83,16 +83,11 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-  fonts:
-    - family: Roboto
-      fonts:
-        - asset: Assets/Fonts/Roboto-Regular.ttf
-        - asset: Assets/Fonts/Roboto-Bold.ttf
+
   assets:
     - assets/
     - assets/images/
     - data/
-    - Assets/Fonts/Roboto-Regular.ttf
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg
