@@ -56,7 +56,6 @@ class _UserSetupState extends State<UserSetup> {
                 backgroundColor: Colors.grey,
                 backgroundImage: (prourl==null)?null:NetworkImage(prourl),
               ),
-
             ],
           ),
         ),

@@ -65,7 +65,7 @@ class _ChatsListState extends State<ChatsList> {
                           style: new TextStyle(fontWeight: FontWeight.bold),
                         ),
                         new Text(
-                          'Hello',
+                          '11:15',
                           style: new TextStyle(color: Colors.grey, fontSize: 14.0),
                         ),
                       ],

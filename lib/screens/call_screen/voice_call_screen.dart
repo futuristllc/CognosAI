@@ -184,7 +184,7 @@ class _VoiceCallState extends State<VoiceCall> {
       });
     };
 
-    AgoraRtcEngine.onFirstRemoteVideoFrame = (
+    /*AgoraRtcEngine.onFirstRemoteVideoFrame = (
         int uid,
         int width,
         int height,
@@ -194,20 +194,20 @@ class _VoiceCallState extends State<VoiceCall> {
         final info = 'firstRemoteVideo: $uid ${width}x $height';
         _infoStrings.add(info);
       });
-    };
+    };*/
   }
 
   /// Helper function to get list of native views
-  List<Widget> _getRenderViews() {
+  /*List<Widget> _getRenderViews() {
     final List<AgoraRenderWidget> list = [
-      AgoraRenderWidget(0, local: true, preview: false),
+      AgoraRenderWidget(0, local: false, preview: false),
     ];
     _users.forEach((int uid) => list.add(AgoraRenderWidget(uid)));
     return list;
-  }
+  }*/
 
   /// Video view wrapper
-  Widget _videoView(view) {
+  /*Widget _videoView(view) {
     return Expanded(child: Container(child: view));
   }
 
@@ -219,17 +219,18 @@ class _VoiceCallState extends State<VoiceCall> {
         children: wrappedViews,
       ),
     );
-  }
+  }*/
 
   Widget _viewRows(){
-    final views = _getRenderViews();
-
-    var id = widget.voice.receiverId;
+    //final views = _getRenderViews();
     var name = widget.voice.receiverName;
     var pic = widget.voice.receiverPic;
     return Container(
+      decoration: new BoxDecoration(
+        color: Colors.lightBlue,
+      ),
       child: Center(
-        child: Row(
+        child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             pic==null ? Container(
@@ -237,9 +238,14 @@ class _VoiceCallState extends State<VoiceCall> {
                 Icons.person,
                 size: 100,
                 color: Colors.black38,
-              ),) : CachedImage(pic, isRound: true, radius: 120, width: 10, height: 10,),
+              ),) : CachedImage(pic, isRound: true, radius: 150, width: 10, height: 10,),
             SizedBox(height: 10),
-
+            Container(
+              child: Text(
+                name,
+                style: TextStyle(color: Colors.white, fontSize: 25),
+              ),
+            ),
           ],
         ),
       ),
@@ -328,12 +334,6 @@ class _VoiceCallState extends State<VoiceCall> {
                       voiceMethods.vendCall(
                         voice: widget.voice,
                       );
-                      /*Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => DashBoard(faceExpr: faceExpression),
-                      ),
-                    );*/
                     },
                     child: Icon(
                       Icons.call_end,
@@ -345,26 +345,6 @@ class _VoiceCallState extends State<VoiceCall> {
                     fillColor: Colors.redAccent,
                     padding: const EdgeInsets.all(15.0),
                   ),
-                ],
-              ),
-              Padding(padding: EdgeInsets.all(10),),
-              /*Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  RawMaterialButton(
-                    onPressed: _onToggleCamera,
-                    child: Icon(
-                      feed?Icons.videocam : Icons.videocam_off,
-                      color: feed?Colors.white : Colors.blueAccent,
-                      size: 20.0,
-                    ),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: feed?Colors.blueAccent:Colors.white,
-                    padding: const EdgeInsets.all(12.0),
-                  ),
-
                   RawMaterialButton(
                     onPressed: _onToggleMute,
                     child: Icon(
@@ -378,33 +358,9 @@ class _VoiceCallState extends State<VoiceCall> {
                     padding: const EdgeInsets.all(12.0),
                   ),
 
-                  RawMaterialButton(
-                    onPressed: _onSwitchCamera,
-                    child: Icon(
-                      Icons.switch_camera,
-                      color: Colors.blueAccent,
-                      size: 20.0,
-                    ),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: Colors.white,
-                    padding: const EdgeInsets.all(12.0),
-                  ),
-
-                  RawMaterialButton(
-                    onPressed: checkScreenshot,
-                    child: Icon(
-                      shouldCapture?Icons.widgets : Icons.widgets_outlined,
-                      color: shouldCapture?Colors.white:Colors.blueAccent ,
-                      size: 20.0,
-                    ),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: shouldCapture?Colors.blueAccent:Colors.white,
-                    padding: const EdgeInsets.all(12.0),
-                  ),
                 ],
-              ),*/
+              ),
+              Padding(padding: EdgeInsets.all(10),),
             ],
           ),
         ) :
@@ -418,30 +374,21 @@ class _VoiceCallState extends State<VoiceCall> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  /*RawMaterialButton(
-                    onPressed: _onToggleCamera,
-                    child: Icon(
-                      feed?Icons.videocam : Icons.videocam_off,
-                      color: feed?Colors.white : Colors.blueAccent,
-                      size: 20.0,
-                    ),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: feed?Colors.blueAccent:Colors.white,
-                    padding: const EdgeInsets.all(12.0),
-                  ),*/
-
                   RawMaterialButton(
-                    onPressed: _onToggleMute,
+                    onPressed: (){
+                      voiceMethods.vendCall(
+                        voice: widget.voice,
+                      );
+                    },
                     child: Icon(
-                      muted ? Icons.mic : Icons.mic_off,
-                      color: muted ? Colors.white : Colors.blueAccent,
-                      size: 20.0,
+                      Icons.call_end,
+                      color: Colors.white,
+                      size: 25.0,
                     ),
                     shape: CircleBorder(),
                     elevation: 2.0,
-                    fillColor: muted ? Colors.blueAccent : Colors.white,
-                    padding: const EdgeInsets.all(12.0),
+                    fillColor: Colors.redAccent,
+                    padding: const EdgeInsets.all(15.0),
                   ),
 
                   /*RawMaterialButton(

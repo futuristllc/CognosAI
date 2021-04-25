@@ -91,7 +91,6 @@ class _ChatScreenState extends State<ChatScreen> {
     _imageUploadProvider = Provider.of<ImageUploadProvider>(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         titleSpacing: 0.0,
@@ -172,28 +171,36 @@ class _ChatScreenState extends State<ChatScreen> {
           )
         ],
       ),
-      body: Column(
-        children: <Widget>[
-          Flexible(
-            child: messageList(),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage('assets/images/wall.jpg'),
+            fit: BoxFit.cover,
           ),
-          _imageUploadProvider.getViewState == ViewState.LOADING
-              ? Container(
-            alignment: Alignment.centerRight,
-            margin: EdgeInsets.only(right: 15),
-            child: CircularProgressIndicator(),
-          )
-              : Container(),
-          chatControls(),
-          showEmojiPicker ? Container(child: emojiContainer()) : Container(),
-        ],
+        ),
+        child: Column(
+          children: <Widget>[
+            Flexible(
+              child: messageList(),
+            ),
+            _imageUploadProvider.getViewState == ViewState.LOADING
+                ? Container(
+              alignment: Alignment.centerRight,
+              margin: EdgeInsets.only(right: 15),
+              child: CircularProgressIndicator(),
+            )
+                : Container(),
+            chatControls(),
+            showEmojiPicker ? Container(child: emojiContainer()) : Container(),
+          ],
+        ),
       ),
     );
   }
 
   emojiContainer() {
     return EmojiPicker(
-      bgColor: Colors.white10,
+      bgColor: Colors.white,
       indicatorColor: Colors.lightBlue,
       rows: 4,
       columns: 10,
@@ -235,7 +242,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ],
               ),
-              message.senderId==_currentUserId? InkWell(
+              message.senderId!=_currentUserId? InkWell(
                 onTap: (){
 
                 },
@@ -406,136 +413,142 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   void _settingModalBottomSheet(context) {
-    showModalBottomSheet(context: context, builder: (BuildContext bc) {
-      return new Container(
-        //could change this to Color(0xFF737373),
-        //so you don't have to change MaterialApp canvasColor
-        child: new Container(
+    showModalBottomSheet(context: context, elevation: 40, enableDrag: true, barrierColor: Colors.transparent, backgroundColor: Colors.transparent, builder: (BuildContext bc) {
+      return new Padding(
+        padding: EdgeInsets.only(left: 15, right: 15, bottom: MediaQuery.of(context).size.width/7),
+
+        child: Container(
           decoration: new BoxDecoration(
-              color: Colors.white,
-              borderRadius: new BorderRadius.only(
-                  topLeft: const Radius.circular(10.0),
-                  topRight: const Radius.circular(10.0))),
-          child: new Wrap(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(top:20, bottom:20),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                CircleAvatar(radius: 24 ,backgroundColor: Colors.lightBlue, child: Icon(Icons.image,size: 27, color: Colors.white,)),
-                                Padding(
-                                    padding: EdgeInsets.only(top:7),
-                                    child: Text('Gallery', style: TextStyle(fontSize: 14, color: Colors.black54))),
-                              ],
+            color: Colors.transparent,
+            borderRadius: new BorderRadius.circular(15),
+          ),
+          //could change this to Color(0xFF737373),
+          //so you don't have to change MaterialApp canvasColor
+          child: new Container(
+            decoration: new BoxDecoration(
+                color: Colors.white,
+                borderRadius: new BorderRadius.circular(15)),
+            child: new Wrap(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(top:20, bottom:20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            InkWell(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  CircleAvatar(radius: 24 ,backgroundColor: Colors.lightBlue, child: Icon(Icons.image,size: 27, color: Colors.white,)),
+                                  Padding(
+                                      padding: EdgeInsets.only(top:7),
+                                      child: Text('Gallery', style: TextStyle(fontSize: 14, color: Colors.black54))),
+                                ],
+                              ),
+                              onTap: (){
+                                pickImage(source: ImageSource.gallery);
+                              },
                             ),
-                            onTap: (){
-                              pickImage(source: ImageSource.gallery);
-                            },
-                          ),
-                          InkWell(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                CircleAvatar(radius: 24 ,backgroundColor: Colors.deepPurpleAccent, child: Icon(Icons.insert_drive_file,size: 27, color: Colors.white,)),
-                                Padding(
-                                    padding: EdgeInsets.only(top:7),
-                                    child: Text('Document', style: TextStyle(fontSize: 14, color: Colors.black54))),
-                              ],
+                            InkWell(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  CircleAvatar(radius: 24 ,backgroundColor: Colors.deepPurpleAccent, child: Icon(Icons.insert_drive_file,size: 27, color: Colors.white,)),
+                                  Padding(
+                                      padding: EdgeInsets.only(top:7),
+                                      child: Text('Document', style: TextStyle(fontSize: 14, color: Colors.black54))),
+                                ],
+                              ),
+                              onTap: (){
+                                openFileExplorer();
+                              },
                             ),
-                            onTap: (){
-                              openFileExplorer();
-                            },
-                          ),
-                          InkWell(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                CircleAvatar(radius: 24 ,backgroundColor: Colors.pink, child: Icon(Icons.contacts,size: 27, color: Colors.white,)),
-                                Padding(
-                                    padding: EdgeInsets.only(top:7),
-                                    child: Text('Contact', style: TextStyle(fontSize: 14, color: Colors.black54))),
-                              ],
+                            InkWell(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  CircleAvatar(radius: 24 ,backgroundColor: Colors.pink, child: Icon(Icons.contacts,size: 27, color: Colors.white,)),
+                                  Padding(
+                                      padding: EdgeInsets.only(top:7),
+                                      child: Text('Contact', style: TextStyle(fontSize: 14, color: Colors.black54))),
+                                ],
+                              ),
+                              onTap: (){
+                                //pickImage(source: ImageSource.gallery);
+                              },
                             ),
-                            onTap: (){
-                              pickImage(source: ImageSource.gallery);
-                            },
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          InkWell(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                CircleAvatar(radius: 24 ,backgroundColor: Colors.green.shade400, child: Icon(Icons.location_on,size: 27, color: Colors.white,)),
-                                Padding(
-                                    padding: EdgeInsets.only(top:7),
-                                    child: Text('Location', style: TextStyle(fontSize: 14, color: Colors.black54))),
-                              ],
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            InkWell(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  CircleAvatar(radius: 24 ,backgroundColor: Colors.green.shade400, child: Icon(Icons.location_on,size: 27, color: Colors.white,)),
+                                  Padding(
+                                      padding: EdgeInsets.only(top:7),
+                                      child: Text('Location', style: TextStyle(fontSize: 14, color: Colors.black54))),
+                                ],
+                              ),
+                              onTap: (){
+                                //pickImage(source: ImageSource.gallery);
+                              },
                             ),
-                            onTap: (){
-                              pickImage(source: ImageSource.gallery);
-                            },
-                          ),
-                          InkWell(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                CircleAvatar(radius: 24 ,backgroundColor: Colors.indigoAccent, child: Icon(Icons.add_call,size: 27, color: Colors.white,)),
-                                Padding(
-                                    padding: EdgeInsets.only(top:7),
-                                    child: Text('Meetings', style: TextStyle(fontSize: 14, color: Colors.black54))),
-                              ],
+                            InkWell(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  CircleAvatar(radius: 24 ,backgroundColor: Colors.indigoAccent, child: Icon(Icons.add_call,size: 27, color: Colors.white,)),
+                                  Padding(
+                                      padding: EdgeInsets.only(top:7),
+                                      child: Text('Meetings', style: TextStyle(fontSize: 14, color: Colors.black54))),
+                                ],
+                              ),
+                              onTap: (){
+                                //pickImage(source: ImageSource.gallery);
+                              },
                             ),
-                            onTap: (){
-                              pickImage(source: ImageSource.gallery);
-                            },
-                          ),
-                          InkWell(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                CircleAvatar(radius: 24 ,backgroundColor: Colors.orange, child: Icon(Icons.library_music,size: 27, color: Colors.white,)),
-                                Padding(
-                                    padding: EdgeInsets.only(top:7),
-                                    child: Text('Audio', style: TextStyle(fontSize: 14, color: Colors.black54))),
-                              ],
+                            InkWell(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  CircleAvatar(radius: 24 ,backgroundColor: Colors.orange, child: Icon(Icons.library_music,size: 27, color: Colors.white,)),
+                                  Padding(
+                                      padding: EdgeInsets.only(top:7),
+                                      child: Text('Audio', style: TextStyle(fontSize: 14, color: Colors.black54))),
+                                ],
+                              ),
+                              onTap: (){
+                                //pickImage(source: ImageSource.gallery);
+                              },
                             ),
-                            onTap: (){
-                              pickImage(source: ImageSource.gallery);
-                            },
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              )
-            ],
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       );
@@ -547,76 +560,6 @@ class _ChatScreenState extends State<ChatScreen> {
       setState(() {
         isWriting = val;
       });
-    }
-
-    addMediaModal(context) {
-      showModalBottomSheet(
-          context: context,
-          elevation: 0,
-          backgroundColor: Colors.white,
-          builder: (context) {
-            return Column(
-              children: <Widget>[
-                Container(
-                  padding: EdgeInsets.symmetric(vertical: 15),
-                  child: Row(
-                    children: <Widget>[
-                      FlatButton(
-                        child: Icon(
-                          Icons.close,
-                        ),
-                        onPressed: () => Navigator.maybePop(context),
-                      ),
-                      Expanded(
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Content and tools",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Flexible(
-                  child: ListView(
-                    children: <Widget>[
-                      ModalTile(
-                        title: "Media",
-                        subtitle: "Share Photos and Video",
-                        icon: Icons.image,
-                        onTap: () => pickImage(source: ImageSource.gallery),
-                      ),
-                      ModalTile(
-                          title: "File",
-                          subtitle: "Share files",
-                          icon: Icons.tab),
-                      ModalTile(
-                          title: "Contact",
-                          subtitle: "Share contacts",
-                          icon: Icons.contacts),
-                      ModalTile(
-                          title: "Location",
-                          subtitle: "Share a location",
-                          icon: Icons.add_location),
-                      ModalTile(
-                          title: "Schedule Call",
-                          subtitle: "Arrange a skype call and get reminders",
-                          icon: Icons.schedule),
-                      ModalTile(
-                          title: "Create Poll",
-                          subtitle: "Share polls",
-                          icon: Icons.poll)
-                    ],
-                  ),
-                ),
-              ],
-            );
-          });
     }
 
     sendMessage() {
@@ -640,9 +583,12 @@ class _ChatScreenState extends State<ChatScreen> {
       _repository.addMessageToDb(_message, sender, widget.receiver);
     }
 
-
     return Container(
-      padding: EdgeInsets.all(10),
+
+      decoration: BoxDecoration(
+        color: Colors.blue.withOpacity(0),
+      ),
+      padding: EdgeInsets.all(5),
       child: Row(
         children: <Widget>[
           GestureDetector(
@@ -650,10 +596,10 @@ class _ChatScreenState extends State<ChatScreen> {
             child: Container(
               padding: EdgeInsets.all(5),
               decoration: BoxDecoration(
-                gradient: UniversalVariables.fabGradient,
+                color:Colors.white,
                 shape: BoxShape.circle,
               ),
-              child: Icon(Icons.add, color: Colors.white,),
+              child: Icon(Icons.add, color: Colors.lightBlue,),
             ),
           ),
           SizedBox(
@@ -668,7 +614,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   focusNode: textFieldFocus,
                   onTap: () => hideEmojiContainer(),
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                   ),
                   onChanged: (val) {
                     (val.length > 0 && val.trim() != "")
@@ -688,7 +634,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     contentPadding:
                     EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                     filled: true,
-                    fillColor: UniversalVariables.separatorColor,
+                    fillColor: Colors.white,
                   ),
                 ),
                 IconButton(
@@ -705,7 +651,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       hideEmojiContainer();
                     }
                   },
-                  icon: Icon(Icons.face, color: Colors.white,),
+                  icon: Icon(Icons.face, color: Colors.grey,),
                 ),
               ],
             ),
@@ -714,24 +660,24 @@ class _ChatScreenState extends State<ChatScreen> {
               ? Container()
               : Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Icon(Icons.record_voice_over, color: Colors.lightBlue,),
+            child: Icon(Icons.record_voice_over, color: Colors.white,),
           ),
           isWriting
               ? Container()
               : GestureDetector(
-            child: Icon(Icons.camera_alt, color: Colors.lightBlue,),
+            child: Icon(Icons.camera_alt, color: Colors.white,),
             onTap: () => pickImage(source: ImageSource.camera),
           ),
           isWriting
               ? Container(
               margin: EdgeInsets.only(left: 10),
               decoration: BoxDecoration(
-                  gradient: UniversalVariables.fabGradient,
+                  color: Colors.lightBlue,
                   shape: BoxShape.circle),
               child: IconButton(
                 icon: Icon(
                   Icons.send,
-                  size: 15,
+                  size: 20,
                   color: Colors.white,
                 ),
                 onPressed: () => sendMessage(),

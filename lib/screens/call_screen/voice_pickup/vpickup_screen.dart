@@ -6,6 +6,7 @@ import 'package:cognos/screens/chatscreen/cache_image/cache_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cognos/models/voice_call.dart';
 import 'package:cognos/resources/voice_call.dart';
+import 'package:cognos/screens/call_screen/voice_call_screen.dart';
 
 class VoicePickupScreen extends StatelessWidget {
   final Voice vcall;
@@ -65,7 +66,7 @@ class VoicePickupScreen extends StatelessWidget {
                       ? Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => VoicePickupScreen(vcall: vcall),
+                      builder: (context) => VoiceCall(voice: vcall),
                     ),
                   )
                       : {},
