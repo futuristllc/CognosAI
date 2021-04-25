@@ -9,6 +9,7 @@ import 'package:cognos/models/calls_data.dart';
 import 'package:cognos/models/voice_call.dart';
 import 'package:cognos/resources/call_method.dart';
 import 'package:cognos/resources/voice_call.dart';
+import 'package:cognos/screens/chatscreen/cache_image/cache_image.dart';
 import 'package:cognos/screens/dashboard/dashboard.dart';
 import 'package:date_format/date_format.dart';
 import 'package:firebase_ml_vision/firebase_ml_vision.dart';
@@ -24,7 +25,9 @@ import 'package:tflite/tflite.dart';
 import 'package:toast/toast.dart';
 
 class VoiceCall extends StatefulWidget {
+
   final Voice voice;
+  final VoiceCallMethods vcallMethods = VoiceCallMethods();
 
   VoiceCall({
     @required this.voice,
@@ -218,8 +221,33 @@ class _VoiceCallState extends State<VoiceCall> {
     );
   }
 
+  Widget _viewRows(){
+    final views = _getRenderViews();
+
+    var id = widget.voice.receiverId;
+    var name = widget.voice.receiverName;
+    var pic = widget.voice.receiverPic;
+    return Container(
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            pic==null ? Container(
+              child: Icon(
+                Icons.person,
+                size: 100,
+                color: Colors.black38,
+              ),) : CachedImage(pic, isRound: true, radius: 120, width: 10, height: 10,),
+            SizedBox(height: 10),
+
+          ],
+        ),
+      ),
+    );
+  }
+
   /// Video layout wrapper
-  Widget _viewRows() {
+  /*Widget _viewRows() {
     final views = _getRenderViews();
     switch (views.length) {
       case 1:
@@ -254,7 +282,7 @@ class _VoiceCallState extends State<VoiceCall> {
       default:
     }
     return Container();
-  }
+  }*/
 
   void _onToggleMute() {
     setState(() {
