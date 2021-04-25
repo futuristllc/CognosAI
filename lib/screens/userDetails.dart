@@ -44,7 +44,6 @@ class _UserDetailsState extends State<UserDetails> {
   void initState() {
     super.initState();
 
-
     _repository.getCurrentUser().then((user) {
       setState(() {
         now = new DateTime.now();
@@ -124,6 +123,7 @@ class _UserDetailsState extends State<UserDetails> {
     userUpdated = false;
     DocumentReference userRef = Firestore.instance.collection("users").document(currentUserId);
     if(nameCon.text.length!=0 && abCon.text.length!=0 && phoneCon.text.length!=0 && emailCon.text.length!=0){
+
       userRef.setData({
         "name": nameCon.text,
         "about": abCon.text,
