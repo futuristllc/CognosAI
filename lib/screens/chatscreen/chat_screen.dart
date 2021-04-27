@@ -150,6 +150,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       ? CallUtils.dial(
                     from: sender,
                     to: widget.receiver,
+                    type: "VIDEO",
                     context: context,
                   ):{},
               ),
@@ -157,9 +158,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 icon: Icon(Icons.phone),
                 onPressed: () async =>
                 await Permissions.cameraAndMicrophonePermissionsGranted()
-                    ? VoiceUtils.vdial(
+                    ? CallUtils.dial(
                   from: sender,
                   to: widget.receiver,
+                  type: "VOICE",
                   context: context,
                 ):{},
               ),
@@ -416,7 +418,6 @@ class _ChatScreenState extends State<ChatScreen> {
     showModalBottomSheet(context: context, elevation: 40, enableDrag: true, barrierColor: Colors.transparent, backgroundColor: Colors.transparent, builder: (BuildContext bc) {
       return new Padding(
         padding: EdgeInsets.only(left: 15, right: 15, bottom: MediaQuery.of(context).size.width/7),
-
         child: Container(
           decoration: new BoxDecoration(
             color: Colors.transparent,

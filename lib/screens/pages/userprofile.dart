@@ -161,101 +161,107 @@ class _UserPageState extends State<UserPage> {
     getProfileUrl();
     return SafeArea(
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: ListView(
           children: <Widget>[
-            Center(
+            /*Center(
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
                 child: Text(
                   'User Profile',
                   style: TextStyle(
                     fontSize: 27,
-                    color: Colors.black87,
+                    color: Colors.lightBlue,
                     fontWeight: FontWeight.bold
                   ),
                 ),
               ),
-            ),
+            ),*/
             Padding(
               padding: EdgeInsets.all(5),
-              child: Card(
-                elevation: 2,
+              child:
+              /*Card(
+                elevation: 5,
                 shadowColor: Colors.grey,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.all(40),
-                      child: Column(
-                        children: <Widget>[
-                          Center(
-                            child: Stack(
-                              children: <Widget>[
-                                Container(
-                                  alignment: Alignment.center,
-                                  clipBehavior: Clip.hardEdge,
-                                  height: 180,
-                                  width: 180,
-                                  decoration: new BoxDecoration(
-                                    color: Colors.grey.shade300,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: (prourl != null)
-                                      ? CircleAvatar(
-                                    radius: 150,
-                                    backgroundImage: NetworkImage(prourl),
-                                  )
-                                      :new Container(
-                                    child: Icon(
-                                      Icons.person,
-                                      size: 100,
-                                      color: Colors.black38,
-                                    ) ,
-                                  ),
+                child:
+              ),*/
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(40),
+                    child: Column(
+                      children: <Widget>[
+                        Center(
+                          child: Stack(
+                            children: <Widget>[
+                              Container(
+                                alignment: Alignment.center,
+                                clipBehavior: Clip.hardEdge,
+                                height: 180,
+                                width: 180,
+                                decoration: new BoxDecoration(
+                                  color: Colors.grey.shade300,
+                                  shape: BoxShape.circle,
                                 ),
-                                Container(
-                                  margin: EdgeInsets.only(top: 130,left: 130),
-                                  child: ButtonTheme(
-                                    height: 50,
-                                    child: RaisedButton(
-                                      color: Colors.lightBlue,
-                                      shape: CircleBorder(),
-                                      onPressed: () {_settingModalBottomSheet(context);},
-                                      elevation: 7,
-                                      child: Icon(
-                                        Icons.camera_alt,
-                                        color: Colors.white,
-                                      ),
+                                child: (prourl != null)
+                                    ? CircleAvatar(
+                                  radius: 150,
+                                  backgroundImage: NetworkImage(prourl),
+                                )
+                                    :new Container(
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 100,
+                                    color: Colors.black38,
+                                  ) ,
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(top: 130,left: 130),
+                                child: ButtonTheme(
+                                  height: 50,
+                                  child: RaisedButton(
+                                    color: Colors.lightBlue,
+                                    shape: CircleBorder(),
+                                    onPressed: () {_settingModalBottomSheet(context);},
+                                    elevation: 7,
+                                    child: Icon(
+                                      Icons.camera_alt,
+                                      color: Colors.white,
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),),
-                          Center(
-                            child: TextField(
-                              autofocus: false,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 20, color: Colors.lightBlue, fontFamily: 'Pacifico', fontWeight: FontWeight.bold),
-                              keyboardType: TextInputType.name,
-                              textCapitalization: TextCapitalization.words,
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                                hintText: "Your Name",hintStyle: TextStyle(fontSize: 20, color: Colors.grey, fontFamily: 'Pacifico'),
                               ),
-                              controller: nameCon,
+                            ],
+                          ),),
+                        Center(
+                          child: TextField(
+                            autofocus: false,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(fontSize: 20, color: Colors.lightBlue, fontFamily: 'Pacifico', fontWeight: FontWeight.bold),
+                            keyboardType: TextInputType.name,
+                            textCapitalization: TextCapitalization.words,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              hintText: "Your Name",hintStyle: TextStyle(fontSize: 20, color: Colors.grey, fontFamily: 'Pacifico'),
                             ),
+                            controller: nameCon,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
             Padding(
               padding: EdgeInsets.only(left: 5,right: 5,top: 0,bottom: 0),
-              child: Card(
-                elevation: 2,
+              child: Container(
+                decoration: new BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: new BorderRadius.circular(15),
+                ),
                 child: Column(
                   children: <Widget>[
                     Divider(
@@ -281,7 +287,7 @@ class _UserPageState extends State<UserPage> {
                         ),
                       ),
                     ),
-                    Divider(),
+                    Divider(indent: 16, endIndent: 16, thickness: 1,),
                     Padding(
                       padding: EdgeInsets.only(top: 14),
                       child: ListTile(

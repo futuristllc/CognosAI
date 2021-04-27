@@ -9,6 +9,7 @@ class _StatusState extends State<Status> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Center(
         child: Text('Status'),
       ),

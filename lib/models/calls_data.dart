@@ -32,7 +32,7 @@ class Call {
     callMap["receiver_pic"] = call.receiverPic;
     callMap["channel_id"] = call.channelId;
     callMap["has_dialled"] = call.hasDialled;
-    callMap["type"] = "VIDEO";
+    callMap["type"] = call.type;
     return callMap;
   }
 

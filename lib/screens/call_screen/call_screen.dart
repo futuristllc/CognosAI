@@ -40,6 +40,7 @@ class _CallScreenState extends State<CallScreen> {
   bool vision = false;
   var timer;
   bool _loading = false;
+  bool speaker = true;
 
   List<Rect> rect = new List<Rect>();
   List _outputs;
@@ -497,6 +498,13 @@ class _CallScreenState extends State<CallScreen> {
     AgoraRtcEngine.switchCamera();
   }
 
+  void _onToggleSpeaker(){
+    setState(() {
+      speaker =! speaker;
+    });
+    AgoraRtcEngine.setEnableSpeakerphone(speaker);
+  }
+
   /// Toolbar layout
   Widget _toolbar(){
     return OrientationBuilder(
@@ -532,6 +540,18 @@ class _CallScreenState extends State<CallScreen> {
                     elevation: 2.0,
                     fillColor: Colors.redAccent,
                     padding: const EdgeInsets.all(15.0),
+                  ),
+                  RawMaterialButton(
+                    onPressed: _onToggleSpeaker,
+                    child: Icon(
+                      speaker ? Icons.volume_up : Icons.volume_off,
+                      color: speaker ? Colors.white : Colors.blueAccent,
+                      size: 20.0,
+                    ),
+                    shape: CircleBorder(),
+                    elevation: 2.0,
+                    fillColor: speaker ? Colors.blueAccent : Colors.white,
+                    padding: const EdgeInsets.all(12.0),
                   ),
                 ],
               ),
@@ -654,7 +674,18 @@ class _CallScreenState extends State<CallScreen> {
                     fillColor: Colors.redAccent,
                     padding: const EdgeInsets.all(15.0),
                   ),
-
+                  RawMaterialButton(
+                    onPressed: _onToggleSpeaker,
+                    child: Icon(
+                      speaker ? Icons.volume_up : Icons.volume_off,
+                      color: speaker ? Colors.white : Colors.blueAccent,
+                      size: 20.0,
+                    ),
+                    shape: CircleBorder(),
+                    elevation: 2.0,
+                    fillColor: speaker ? Colors.blueAccent : Colors.white,
+                    padding: const EdgeInsets.all(12.0),
+                  ),
                   RawMaterialButton(
                     onPressed: _onSwitchCamera,
                     child: Icon(

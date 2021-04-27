@@ -16,6 +16,7 @@ class ChatsList extends StatefulWidget {
 class _ChatsListState extends State<ChatsList> {
 
   List<UserList> userList;
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -41,57 +42,58 @@ class _ChatsListState extends State<ChatsList> {
   Widget build(BuildContext context) {
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: (userList==null)? Container(child: Center(child: CircularProgressIndicator())):
       Padding(
         padding: EdgeInsets.only(top: 7),
         child: ListView.builder(
-          itemCount: userList.length,
-          itemBuilder: (context, i) => new GestureDetector(
-            child: InkWell(
-              child: Column(
-                children: <Widget>[
-                  new ListTile(
-                    leading: new CircleAvatar(
-                      foregroundColor: Theme.of(context).primaryColor,
-                      backgroundColor: Colors.grey,
-                      backgroundImage: (userList[i].profileurl!=null)? new NetworkImage(userList[i].profileurl):
-                      AssetImage('assets/images/user.png'),
-                    ),
-                    title: new Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        new Text(
-                          userList[i].name,
-                          style: new TextStyle(fontWeight: FontWeight.bold),
+            itemCount: userList.length,
+            itemBuilder: (context, i) => new GestureDetector(
+              child: InkWell(
+                child: Column(
+                  children: <Widget>[
+                    new ListTile(
+                      leading: new CircleAvatar(
+                        foregroundColor: Theme.of(context).primaryColor,
+                        backgroundColor: Colors.grey,
+                        backgroundImage: (userList[i].profileurl!=null)? new NetworkImage(userList[i].profileurl):
+                        AssetImage('assets/images/user.png'),
+                      ),
+                      title: new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          new Text(
+                            userList[i].name,
+                            style: new TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          new Text(
+                            '11:15',
+                            style: new TextStyle(color: Colors.grey, fontSize: 14.0),
+                          ),
+                        ],
+                      ),
+                      subtitle: new Container(
+                        padding: const EdgeInsets.only(top: 5.0),
+                        child: new Text(
+                          userList[i].about,
+                          style: new TextStyle(color: Colors.grey, fontSize: 15.0),
                         ),
-                        new Text(
-                          '11:15',
-                          style: new TextStyle(color: Colors.grey, fontSize: 14.0),
-                        ),
-                      ],
-                    ),
-                    subtitle: new Container(
-                      padding: const EdgeInsets.only(top: 5.0),
-                      child: new Text(
-                        userList[i].about,
-                        style: new TextStyle(color: Colors.grey, fontSize: 15.0),
                       ),
                     ),
-                  ),
-                  new Divider(
-                    height: 1.0,
-                    indent: 65,
-                    endIndent: 15,
-                  ),
-                ],
+                    new Divider(
+                      height: 1.0,
+                      indent: 65,
+                      endIndent: 15,
+                    ),
+                  ],
+                ),
+                onTap: (){
+                  _openChat(context,userList[i],i);
+                },
+                splashColor: Colors.black12,
               ),
-              onTap: (){
-                _openChat(context,userList[i],i);
-              },
-              splashColor: Colors.black12,
-            ),
-          )),
-        ),
+            )),
+      ),
     );
   }
 

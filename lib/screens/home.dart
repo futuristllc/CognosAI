@@ -85,6 +85,13 @@ class _HomeState extends State<Home> {
     });
     return PickupLayout(
       scaffold: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.lightBlue,
+          title: Text(_page == 0 ? 'User Profile ': 'Cognos AI', style: TextStyle(color: Colors.white, fontFamily: 'Cookie', fontSize: 30),),
+          centerTitle: true,
+          elevation: 2,
+          automaticallyImplyLeading: false,
+        ),
         key: _scaffoldKey,
         body: Center(
           child: PageView(
@@ -217,16 +224,16 @@ class _HomeState extends State<Home> {
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
 
         drawer: Drawer(
-          child: Center(
+          child: SafeArea(
             child: Text(
-              'Pressed : $_count',
+              'COGNOS by Futurist',
               style: TextStyle(
-                fontFamily: 'Pacifico',
+                fontFamily: 'Cookie',
                 fontSize: 20,
                 color: Colors.lightBlue,
               ),
             ),
-          ),
+          )
         ),
         // Disable opening the drawer with a swipe gesture.
         drawerEnableOpenDragGesture: true,

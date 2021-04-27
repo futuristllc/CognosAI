@@ -8,7 +8,6 @@ import 'package:cognos/image_provider/user_provider.dart';
 import 'package:cognos/models/calls_data.dart';
 import 'package:cognos/models/voice_call.dart';
 import 'package:cognos/resources/call_method.dart';
-import 'package:cognos/resources/voice_call.dart';
 import 'package:cognos/screens/chatscreen/cache_image/cache_image.dart';
 import 'package:cognos/screens/dashboard/dashboard.dart';
 import 'package:date_format/date_format.dart';
@@ -23,14 +22,15 @@ import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 import 'package:tflite/tflite.dart';
 import 'package:toast/toast.dart';
+import 'package:cognos/resources/firebase_repository.dart';
 
 class VoiceCall extends StatefulWidget {
 
-  final Voice voice;
-  final VoiceCallMethods vcallMethods = VoiceCallMethods();
+  final Call call;
+  final CallMethods callMethods = CallMethods();
 
   VoiceCall({
-    @required this.voice,
+    @required this.call,
   });
 
   @override
@@ -41,19 +41,24 @@ class _VoiceCallState extends State<VoiceCall> {
   static final _users = <int>[];
   final _infoStrings = <String>[];
   bool muted = false;
+  bool speaker = true;
+
+  final CallMethods callMethods = CallMethods();
+  String _currentUserId;
 
   bool shouldCapture = true;
-  final VoiceCallMethods voiceMethods = VoiceCallMethods();
 
   UserProvider userProvider;
   StreamSubscription callStreamSubscription;
+  FirebaseRepository _repository = FirebaseRepository();
 
   @override
   void initState() {
     super.initState();
     addPostFrameCallback();
     initializeAgora();
-
+    _repository.getCurrentUser().then((user) {
+      _currentUserId = user.uid;});
     //timer = Timer.periodic(Duration(seconds: 10), (Timer t) => _takeScreenShot());
   }
 
@@ -73,7 +78,7 @@ class _VoiceCallState extends State<VoiceCall> {
     await AgoraRtcEngine.enableWebSdkInteroperability(true);
     await AgoraRtcEngine.setParameters(
         '''{\"che.video.lowBitRateStreamParameter\":{\"width\":320,\"height\":180,\"frameRate\":15,\"bitRate\":140}}''');
-    await AgoraRtcEngine.joinChannel(null, widget.voice.channelId, null, 0);
+    await AgoraRtcEngine.joinChannel(null, widget.call.channelId, null, 0);
 
   }
 
@@ -81,8 +86,8 @@ class _VoiceCallState extends State<VoiceCall> {
     SchedulerBinding.instance.addPostFrameCallback((_) {
       userProvider = Provider.of<UserProvider>(context, listen: false);
 
-      callStreamSubscription = voiceMethods
-          .vcallStream(uid: userProvider.getUser.uid)
+      callStreamSubscription = callMethods
+          .callStream(uid: userProvider.getUser.uid)
           .listen((DocumentSnapshot ds) {
         // defining the logic
         switch (ds.data) {
@@ -100,7 +105,7 @@ class _VoiceCallState extends State<VoiceCall> {
   /// Create agora sdk instance and initialize
   Future<void> _initAgoraRtcEngine() async {
     await AgoraRtcEngine.create(APP_ID);
-    //await AgoraRtcEngine.enableVideo();
+    await AgoraRtcEngine.disableVideo();
   }
 
   /// Add agora event handlers
@@ -146,7 +151,7 @@ class _VoiceCallState extends State<VoiceCall> {
     };
 
     AgoraRtcEngine.onUserOffline = (int a, int b) {
-      voiceMethods.vendCall(voice: widget.voice);
+      callMethods.endCall(call: widget.call);
       setState(() {
         final info = 'onUserOffline: a: ${a.toString()}, b: ${b.toString()}';
         _infoStrings.add(info);
@@ -223,8 +228,16 @@ class _VoiceCallState extends State<VoiceCall> {
 
   Widget _viewRows(){
     //final views = _getRenderViews();
-    var name = widget.voice.receiverName;
-    var pic = widget.voice.receiverPic;
+
+    var pic, name;
+    if(_currentUserId == widget.call.callerId){
+      name = widget.call.receiverName;
+      pic = widget.call.receiverPic;
+    }
+    else {
+      name = widget.call.callerName;
+      pic = widget.call.callerPic;
+    }
     return Container(
       decoration: new BoxDecoration(
         color: Colors.lightBlue,
@@ -233,7 +246,7 @@ class _VoiceCallState extends State<VoiceCall> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            pic==null ? Container(
+            pic == null ? Container(
               child: Icon(
                 Icons.person,
                 size: 100,
@@ -297,6 +310,13 @@ class _VoiceCallState extends State<VoiceCall> {
     AgoraRtcEngine.muteLocalAudioStream(muted);
   }
 
+  void _onToggleSpeaker(){
+    setState(() {
+      speaker =! speaker;
+    });
+    AgoraRtcEngine.setEnableSpeakerphone(speaker);
+  }
+
   /*void _onToggleCamera() {
     setState(() {
       feed = !feed;
@@ -317,111 +337,62 @@ class _VoiceCallState extends State<VoiceCall> {
 
   /// Toolbar layout
   Widget _toolbar(){
-    return OrientationBuilder(
-      builder: (context,orientation){
-        return orientation == Orientation.portrait ? Padding(
-          padding: EdgeInsets.only(bottom: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
+    return Padding(
+      padding: EdgeInsets.only(bottom: 15),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  RawMaterialButton(
-                    onPressed: (){
-                      voiceMethods.vendCall(
-                        voice: widget.voice,
-                      );
-                    },
-                    child: Icon(
-                      Icons.call_end,
-                      color: Colors.white,
-                      size: 25.0,
-                    ),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: Colors.redAccent,
-                    padding: const EdgeInsets.all(15.0),
-                  ),
-                  RawMaterialButton(
-                    onPressed: _onToggleMute,
-                    child: Icon(
-                      muted ? Icons.mic : Icons.mic_off,
-                      color: muted ? Colors.white : Colors.blueAccent,
-                      size: 20.0,
-                    ),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: muted ? Colors.blueAccent : Colors.white,
-                    padding: const EdgeInsets.all(12.0),
-                  ),
-
-                ],
+              RawMaterialButton(
+                onPressed: _onToggleSpeaker,
+                child: Icon(
+                  speaker ? Icons.volume_up : Icons.volume_off,
+                  color: speaker ? Colors.blueAccent : Colors.white,
+                  size: 20.0,
+                ),
+                shape: CircleBorder(),
+                elevation: 2.0,
+                fillColor: speaker ? Colors.white : Colors.blueAccent,
+                padding: const EdgeInsets.all(12.0),
               ),
-              Padding(padding: EdgeInsets.all(10),),
+              RawMaterialButton(
+                onPressed: (){
+                  callMethods.endCall(
+                    call: widget.call,
+                  );
+                },
+                child: Icon(
+                  Icons.call_end,
+                  color: Colors.white,
+                  size: 25.0,
+                ),
+                shape: CircleBorder(),
+                elevation: 2.0,
+                fillColor: Colors.redAccent,
+                padding: const EdgeInsets.all(15.0),
+              ),
+              RawMaterialButton(
+                onPressed: _onToggleMute,
+                child: Icon(
+                  muted ? Icons.mic : Icons.mic_off,
+                  color: muted ? Colors.white : Colors.blueAccent,
+                  size: 20.0,
+                ),
+                shape: CircleBorder(),
+                elevation: 2.0,
+                fillColor: muted ? Colors.blueAccent : Colors.white,
+                padding: const EdgeInsets.all(12.0),
+              ),
+
             ],
           ),
-        ) :
-        Padding(
-          padding: EdgeInsets.only(bottom: 15),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  RawMaterialButton(
-                    onPressed: (){
-                      voiceMethods.vendCall(
-                        voice: widget.voice,
-                      );
-                    },
-                    child: Icon(
-                      Icons.call_end,
-                      color: Colors.white,
-                      size: 25.0,
-                    ),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: Colors.redAccent,
-                    padding: const EdgeInsets.all(15.0),
-                  ),
-
-                  /*RawMaterialButton(
-                    onPressed: _onSwitchCamera,
-                    child: Icon(
-                      Icons.switch_camera,
-                      color: Colors.blueAccent,
-                      size: 20.0,
-                    ),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: Colors.white,
-                    padding: const EdgeInsets.all(12.0),
-                  ),
-
-                  RawMaterialButton(
-                    onPressed: checkScreenshot,
-                    child: Icon(
-                      shouldCapture?Icons.widgets : Icons.widgets_outlined,
-                      color: shouldCapture?Colors.white:Colors.blueAccent ,
-                      size: 20.0,
-                    ),
-                    shape: CircleBorder(),
-                    elevation: 2.0,
-                    fillColor: shouldCapture?Colors.blueAccent:Colors.white,
-                    padding: const EdgeInsets.all(12.0),
-                  ),*/
-                ],
-              ),
-            ],
-          ),
-        );
-      },
+          Padding(padding: EdgeInsets.all(10),),
+        ],
+      ),
     );
   }
 

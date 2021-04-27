@@ -83,11 +83,16 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  fonts:
+    - family: Cookie
+      fonts:
+        - asset: assets/fonts/Cookie-Regular.ttf
 
   assets:
     - assets/
     - assets/images/
     - data/
+    - assets/fonts/
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

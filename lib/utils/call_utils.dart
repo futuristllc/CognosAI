@@ -4,14 +4,13 @@ import 'package:cognos/models/userlist.dart';
 import 'package:cognos/resources/call_method.dart';
 import 'package:cognos/screens/call_screen/call_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:cognos/resources/voice_call.dart';
-import 'package:cognos/models/voice_call.dart';
 import 'package:cognos/screens/call_screen/voice_call_screen.dart';
+
 
 class CallUtils {
   static final CallMethods callMethods = CallMethods();
 
-  static dial({UserList from, UserList to, context}) async {
+  static dial({UserList from, UserList to, String type, context}) async {
     Call call = Call(
       callerId: from.uid,
       callerName: from.name,
@@ -19,7 +18,7 @@ class CallUtils {
       receiverId: to.uid,
       receiverName: to.name,
       receiverPic: to.profileurl,
-      //type: "VIDEO",
+      type: type.toString(),
       channelId: Random().nextInt(1000).toString(),
     );
 
@@ -27,20 +26,30 @@ class CallUtils {
 
     call.hasDialled = true;
 
-    if (callMade) {
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CallScreen(call: call),
-          ));
+    if(call.type == "VIDEO" && callMade){
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => CallScreen(call: call),
+            ));
+
+    }
+    if(call.type == "VOICE" && callMade) {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => VoiceCall(call: call),
+            ));
+
     }
   }
 }
 
-class VoiceUtils {
+/*class VoiceUtils {
   static final VoiceCallMethods vcallMethods = VoiceCallMethods();
 
-  static vdial({UserList from, UserList to, context}) async {
+  static vdial({UserList from, UserList to, String type, context}) async {
     Voice voice = Voice(
       callerId: from.uid,
       callerName: from.name,
@@ -60,9 +69,9 @@ class VoiceUtils {
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => VoiceCall(voice: voice),
+            builder: (context) => VoiceCall(voice: voice, flag: 1,),
           )
       );
     }
   }
-}
+}*/

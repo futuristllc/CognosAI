@@ -11,6 +11,7 @@ class _CallsListState extends State<CallsList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.only(top: 7),
         child: ListView.builder(
