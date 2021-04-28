@@ -15,6 +15,7 @@ import 'package:cognos/screens/pages/chat_list.dart';
 import 'package:cognos/screens/pages/status.dart';
 import 'package:cognos/screens/pages/userprofile.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
@@ -268,14 +269,59 @@ class _HomeState extends State<Home> {
 
         drawer: Drawer(
           child: SafeArea(
-            child: Text(
-              'COGNOS by Futurist',
-              style: TextStyle(
-                fontFamily: 'Cookie',
-                fontSize: 20,
-                color: Colors.lightBlue,
-              ),
-            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 15, bottom: 5),
+                  child:  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'COGNOS ',
+                        style: GoogleFonts.aldrich(
+                          textStyle: TextStyle(color: Colors.lightBlue, letterSpacing: .5, fontWeight: FontWeight.bold, fontSize: 20),
+                        ),
+                      ),
+                      Text(
+                        'by Futurist',
+                        style: TextStyle(color: Colors.grey, fontSize: 20),
+                      )
+                    ],
+                  ),
+                ),
+                Divider(),
+                Padding(
+                  padding: EdgeInsets.only(top: 10, bottom: 20),
+                  child:  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'View our ',
+                        style: GoogleFonts.aldrich(
+                          textStyle: TextStyle(color: Colors.lightBlue, letterSpacing: .5, fontWeight: FontWeight.bold, fontSize: 15),
+                        ),
+                      ),
+                      Text(
+                        'Git',
+                        style: GoogleFonts.aldrich(
+                          textStyle: TextStyle(color: Colors.grey, letterSpacing: .5, fontWeight: FontWeight.bold, fontSize: 15),
+                        ),
+                      ),
+                      Text(
+                        'Hub',
+                        style: GoogleFonts.aldrich(
+                          textStyle: TextStyle(color: Colors.black, letterSpacing: .5, fontWeight: FontWeight.bold, fontSize: 15),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            )
           )
         ),
         // Disable opening the drawer with a swipe gesture.

@@ -8,6 +8,7 @@ import 'package:cognos/image_provider/image_upload_provider.dart';
 import 'package:cognos/models/userlist.dart';
 import 'package:cognos/screens/chatscreen/cache_image/cache_image.dart';
 import 'package:cognos/screens/chatscreen/messages.dart';
+import 'package:cognos/screens/chatscreen/profileview/profileView.dart';
 import 'package:cognos/utils/call_utils.dart';
 import 'package:cognos/utils/permissions.dart';
 import 'package:cognos/utils/utilities.dart';
@@ -134,8 +135,21 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ),
               onTap: () {
-                //USer Profile
-              },
+                UserList clickedUser = UserList(
+                  uid: widget.receiver.uid,
+                  profileurl: widget.receiver.profileurl,
+                  name: widget.receiver.name,
+                  about: widget.receiver.about,
+                  email: widget.receiver.email,
+                  phone: widget.receiver.phone,
+                  lastTime: widget.receiver.lastTime,
+                  state: widget.receiver.state,
+                );
+                //User Profile
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileView(receiver: clickedUser,)));
+                },
             )
           ],
         ),
