@@ -5,7 +5,7 @@ class User {
   String username;
   String phone;
   String status;
-  int state;
+  String state;
   String profilePhoto;
 
   User({

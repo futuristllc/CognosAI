@@ -31,6 +31,7 @@ class _ChatsListState extends State<ChatsList> {
       });
     });
   }
+
   @override
   void dispose() {
     // TODO: implement dispose
@@ -43,7 +44,24 @@ class _ChatsListState extends State<ChatsList> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: (userList==null)? Container(child: Center(child: CircularProgressIndicator())):
+      body: (userList==null)? Container(child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image(
+                image: AssetImage('assets/images/bgchat.jpg'),
+                width: 200,
+              ),
+              Text(
+                'Chats appears here ...',
+                style: TextStyle(
+                  color: Colors.lightBlue,
+                  fontSize: 20
+                )
+              )
+            ],
+          )
+      )):
       Padding(
         padding: EdgeInsets.only(top: 7),
         child: ListView.builder(
@@ -67,7 +85,7 @@ class _ChatsListState extends State<ChatsList> {
                             style: new TextStyle(fontWeight: FontWeight.bold),
                           ),
                           new Text(
-                            '11:15',
+                            userList[i].lastTime,
                             style: new TextStyle(color: Colors.grey, fontSize: 14.0),
                           ),
                         ],

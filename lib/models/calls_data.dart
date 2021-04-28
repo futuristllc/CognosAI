@@ -8,6 +8,7 @@ class Call {
   String channelId;
   bool hasDialled;
   String type;
+  String time;
 
   Call({
     this.callerId,
@@ -19,6 +20,7 @@ class Call {
     this.channelId,
     this.hasDialled,
     this.type,
+    this.time,
   });
 
   // to map
@@ -33,6 +35,7 @@ class Call {
     callMap["channel_id"] = call.channelId;
     callMap["has_dialled"] = call.hasDialled;
     callMap["type"] = call.type;
+    callMap["time"] = call.time;
     return callMap;
   }
 
@@ -46,5 +49,6 @@ class Call {
     this.channelId = callMap["channel_id"];
     this.hasDialled = callMap["has_dialled"];
     this.type = callMap["type"];
+    this.time = callMap["time"];
   }
 }

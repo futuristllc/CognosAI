@@ -105,13 +105,14 @@ class _UserPageState extends State<UserPage> {
     print("URL is $url");
     DocumentReference userRef = Firestore.instance.collection("users").document(currentUserId);
 
-    userRef.setData({
+    userRef.updateData({
       "name": nameCon.text,
       "about": abCon.text,
       "phone": phoneCon.text,
       "email": emailCon.text,
       "profileurl": url,
       "uid": currentUserId,
+      "state": "online",
     }).then((_) {
       Toast.show('Profile Image has been uploaded successfully', context, duration: Toast.LENGTH_SHORT, gravity: Toast.CENTER, backgroundRadius: 5);
       prourl = url;
@@ -132,13 +133,14 @@ class _UserPageState extends State<UserPage> {
     userUpdated = false;
     DocumentReference userRef = Firestore.instance.collection("users").document(currentUserId);
     if(nameCon.text.length!=0 && abCon.text.length!=0 && phoneCon.text.length!=0 && emailCon.text.length!=0){
-      userRef.setData({
+      userRef.updateData({
         "name": nameCon.text,
         "about": abCon.text,
         "phone": phoneCon.text,
         "email": emailCon.text,
         "profileurl": prourl,
         "uid": currentUserId,
+        "state": "online",
       }).then((_){
         Toast.show("User Updated Successfully", context, duration: Toast.LENGTH_SHORT, gravity: Toast.CENTER, backgroundRadius: 5);
       });

@@ -6,6 +6,7 @@ import 'package:cognos/screens/chatscreen/messages.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cognos/resources/firebase_methods.dart';
 import 'package:flutter/material.dart';
+import 'package:cognos/models/calls_data.dart';
 
 class FirebaseRepository {
   FirebaseMethods _firebaseMethods = FirebaseMethods();

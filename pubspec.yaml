@@ -88,6 +88,7 @@ flutter:
       fonts:
         - asset: assets/fonts/Cookie-Regular.ttf
 
+
   assets:
     - assets/
     - assets/images/

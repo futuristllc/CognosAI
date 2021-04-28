@@ -10,9 +10,24 @@ class _StatusState extends State<Status> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Center(
-        child: Text('Status'),
-      ),
+      body:  Container(child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image(
+                image: AssetImage('assets/images/bgchat.jpg'),
+                width: 200,
+              ),
+              Text(
+                  'Status appears here ...',
+                  style: TextStyle(
+                      color: Colors.lightBlue,
+                      fontSize: 20
+                  )
+              )
+            ],
+          )
+      )),
     );
   }
 }

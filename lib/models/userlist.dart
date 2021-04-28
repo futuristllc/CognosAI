@@ -5,6 +5,8 @@ class UserList {
   String phone;
   String about;
   String profileurl;
+  String lastTime;
+  String state;
 
   UserList({
     this.uid,
@@ -13,6 +15,8 @@ class UserList {
     this.phone,
     this.about,
     this.profileurl,
+    this.lastTime,
+    this.state,
   });
 
   // Named constructor
@@ -23,5 +27,7 @@ class UserList {
     this.about = mapData['about'];
     this.phone = mapData['phone'];
     this.profileurl = mapData['profileurl'];
+    this.lastTime = mapData['lastTime'];
+    this.state = mapData['state'];
   }
 }

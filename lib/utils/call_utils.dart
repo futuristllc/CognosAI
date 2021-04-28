@@ -5,7 +5,7 @@ import 'package:cognos/resources/call_method.dart';
 import 'package:cognos/screens/call_screen/call_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:cognos/screens/call_screen/voice_call_screen.dart';
-
+import 'package:intl/intl.dart';
 
 class CallUtils {
   static final CallMethods callMethods = CallMethods();
@@ -19,6 +19,7 @@ class CallUtils {
       receiverName: to.name,
       receiverPic: to.profileurl,
       type: type.toString(),
+      time: DateFormat("H:m").format(DateTime.now()).toString(),
       channelId: Random().nextInt(1000).toString(),
     );
 

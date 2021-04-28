@@ -103,6 +103,8 @@ class _UserDetailsState extends State<UserDetails> {
       "email": emailCon.text,
       "profileurl": url,
       "uid": currentUserId,
+      "state": "online",
+      "lastTime": DateFormat("H:m").format(DateTime.now()).toString(),
     }).then((_) {
       Toast.show('Profile Image has been uploaded successfully', context, duration: Toast.LENGTH_SHORT, gravity: Toast.CENTER, backgroundRadius: 5);
       prourl = url;
@@ -131,6 +133,8 @@ class _UserDetailsState extends State<UserDetails> {
         "email": emailCon.text,
         "profileurl": prourl,
         "uid": currentUserId,
+        "state": "online",
+        "lastTime": DateFormat("H:m").format(DateTime.now()).toString(),
       }).then((_){
         Toast.show("User Updated Successfully", context, duration: Toast.LENGTH_SHORT, gravity: Toast.CENTER, backgroundRadius: 5);
         Navigator.pushReplacement(

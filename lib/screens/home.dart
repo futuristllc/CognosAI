@@ -64,8 +64,42 @@ class _HomeState extends State<Home> {
         /*uname = user.displayName;
         prourl = user.photoUrl;*/
         initials = Utils.getInitials(user.displayName);
+        updateTimeStart();
       });
     });
+  }
+
+  Future<void> updateTimeStart() async {
+
+    DocumentReference userRef = Firestore.instance.collection("users").document(currentUserId);
+
+    userRef.updateData({
+      "state": "online",
+      "lastTime": DateFormat("H:m").format(DateTime.now()).toString(),
+    });
+  }
+
+  Future<void> removeState() async {
+
+    DocumentReference userRef = Firestore.instance.collection("users").document(currentUserId);
+
+    userRef.updateData({
+      "state": "offline",
+      "lastTime": DateFormat("H:m").format(DateTime.now()).toString(),
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
+  void deactivate() {
+    // TODO: implement deactivate
+    removeState();
+    super.deactivate();
   }
 
   void _openDrawer() {
@@ -84,7 +118,17 @@ class _HomeState extends State<Home> {
       });
     });
     return PickupLayout(
-      scaffold: Scaffold(
+      scaffold: WillPopScope(
+        onWillPop: () async {
+          removeState().then((_){
+            return false;
+          });
+          //dispose();
+          Navigator.of(context).dispose();
+          //return true;
+        },
+        key: _scaffoldKey,
+        child: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.lightBlue,
           title: Text(_page == 0 ? 'User Profile ': 'Cognos AI', style: TextStyle(color: Colors.white, fontFamily: 'Cookie', fontSize: 30),),
@@ -92,7 +136,6 @@ class _HomeState extends State<Home> {
           elevation: 2,
           automaticallyImplyLeading: false,
         ),
-        key: _scaffoldKey,
         body: Center(
           child: PageView(
             controller: _myPage,
@@ -239,7 +282,7 @@ class _HomeState extends State<Home> {
         drawerEnableOpenDragGesture: true,
         drawerScrimColor: Colors.lightBlue,
       ),
-    );
+    ));
   }
 
   void choiceAction(String choice){
