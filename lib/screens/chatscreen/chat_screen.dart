@@ -126,9 +126,9 @@ class _ChatScreenState extends State<ChatScreen> {
                     Text('${widget.receiver.name}',style: TextStyle(fontSize: 18),
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(left:1),
-                      child: Text('11:20 PM',style: TextStyle(fontSize: 10),
-                      ),
+                      padding: const EdgeInsets.only(left:1, top: 4),
+                      child: widget.receiver.state=="online" ? Text("online",style: TextStyle(fontSize: 12)):
+                      Text("Last seen: ${widget.receiver.lastTime.toString()}",style: TextStyle(fontSize: 12)),
                     ),
                   ],
                 ),

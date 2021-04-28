@@ -90,13 +90,24 @@ class _ChatsListState extends State<ChatsList> {
                           ),
                         ],
                       ),
-                      subtitle: new Container(
-                        padding: const EdgeInsets.only(top: 5.0),
-                        child: new Text(
-                          userList[i].about,
-                          style: new TextStyle(color: Colors.grey, fontSize: 15.0),
-                        ),
+                      subtitle: new Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          new Container(
+                            padding: const EdgeInsets.only(top: 5.0),
+                            child: new Text(
+                              userList[i].about,
+                              style: new TextStyle(color: Colors.grey, fontSize: 15.0),
+                            ),
+                          ),
+                          new Icon(
+                            Icons.circle,
+                            size: 10,
+                            color: userList[i].state== "Online" ? Colors.green: Colors.grey.shade300,
+                          )
+                        ],
                       ),
+
                     ),
                     new Divider(
                       height: 1.0,
@@ -123,6 +134,8 @@ class _ChatsListState extends State<ChatsList> {
         about: userList[i].about,
         email: userList[i].email,
         phone: userList[i].phone,
+        lastTime: userList[i].lastTime,
+        state: userList[i].state,
     );
     await Navigator.push(
       context,

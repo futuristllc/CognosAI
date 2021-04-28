@@ -5,8 +5,12 @@ import 'package:cognos/models/userlist.dart';
 import 'package:cognos/resources/firebase_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cognos/utils/call_utils.dart';
+import 'package:cognos/utils/permissions.dart';
+
 
 class CallsList extends StatefulWidget {
+
   @override
   _CallsListState createState() => _CallsListState();
 }
@@ -15,6 +19,8 @@ class _CallsListState extends State<CallsList> {
   List<Call> call_logs;
 
   String currentUser;
+  String _currentUserId;
+  UserList sender, receiver;
 
   @override
   void initState() {
@@ -24,6 +30,25 @@ class _CallsListState extends State<CallsList> {
 
     fetchContacts(currentUser).then((List<Call> list){
       call_logs = list;
+    });
+
+    _repository.getCurrentUser().then((user) {
+      _currentUserId = user.uid;
+
+      setState(() {
+        Firestore.instance.collection("users").document(user.uid).get().then((
+            value) {
+          String name = value.data['name'];
+          String uid = value.data['uid'];
+          String prourl = value.data['profileurl'];
+
+          sender = UserList(
+            uid: uid,
+            name: name,
+            profileurl: prourl,
+          );
+        });
+      });
     });
   }
 
@@ -81,23 +106,58 @@ class _CallsListState extends State<CallsList> {
                             call_logs[i].receiverName,
                             style: new TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          new Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              call_logs[i].hasDialled=='false'?Icon(Icons.call_received, size: 18, color: Colors.green,):
-                              call_logs[i].hasDialled=='true'?Icon(Icons.call_received, size: 18, color: Colors.red,):
-                              Icon(Icons.call_made, size: 18, color: Colors.green,),
+                          new Padding(
+                            padding: EdgeInsets.only(top: 3),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                call_logs[i].hasDialled=='false'?Icon(Icons.call_received, size: 18, color: Colors.green,):
+                                call_logs[i].hasDialled=='true'?Icon(Icons.call_received, size: 18, color: Colors.red,):
+                                Icon(Icons.call_made, size: 18, color: Colors.green,),
 
-                              Padding(padding: EdgeInsets.only(left: 3),
-                                child: Text(call_logs[i].time, style: new TextStyle(color: Colors.grey, fontSize: 16.0),),
-                              ),
-                            ],
-                          ),
+                                Padding(padding: EdgeInsets.only(left: 3,),
+                                  child: Text(call_logs[i].time, style: new TextStyle(color: Colors.grey, fontSize: 16.0),),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
                       trailing: new Container(
                           padding: const EdgeInsets.only(top: 5.0),
-                          child: call_logs[i].type=='VOICE'?Icon(Icons.call, color: Colors.lightBlue,):Icon(Icons.videocam, color: Colors.lightBlue,)
+                          child: call_logs[i].type=='VOICE'? IconButton(
+                            icon: Icon(Icons.phone, color: Colors.lightBlue,),
+                            onPressed: () async {
+                              receiver = UserList(
+                                uid: _currentUserId == call_logs[i].receiverId.toString()? call_logs[i].callerId: call_logs[i].receiverId,
+                                name: _currentUserId == call_logs[i].receiverId.toString()? call_logs[i].callerName: call_logs[i].receiverName,
+                                profileurl: _currentUserId == call_logs[i].receiverId.toString()? call_logs[i].callerPic: call_logs[i].receiverPic,
+                              );
+                              await Permissions
+                                  .cameraAndMicrophonePermissionsGranted()
+                                  ? CallUtils.dial(
+                                from: sender,
+                                to: receiver,
+                                type: "VOICE",
+                                context: context,
+                              ) : {};
+                            }):
+                          IconButton(
+                            icon: Icon(Icons.videocam, color: Colors.lightBlue,),
+                            onPressed: () async {
+                              receiver = UserList(
+                                uid: _currentUserId == call_logs[i].receiverId.toString()? call_logs[i].callerId: call_logs[i].receiverId,
+                                name: _currentUserId == call_logs[i].receiverId.toString()? call_logs[i].callerName: call_logs[i].receiverName,
+                                profileurl: _currentUserId == call_logs[i].receiverId.toString()? call_logs[i].callerPic: call_logs[i].receiverPic,
+                              );
+                            await Permissions.cameraAndMicrophonePermissionsGranted()
+                                ? CallUtils.dial(
+                              from: sender,
+                              to: receiver,
+                              type: "VIDEO",
+                              context: context,
+                            ):{};},
+                          ),
                       ),
                     ),
                   ),

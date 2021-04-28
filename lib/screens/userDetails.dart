@@ -333,58 +333,64 @@ class _UserDetailsState extends State<UserDetails> {
   }
 
   void _settingModalBottomSheet(context) {
-    showModalBottomSheet(context: context, builder: (BuildContext bc) {
-      return new Container(
-        //could change this to Color(0xFF737373),
-        //so you don't have to change MaterialApp canvasColor
-        child: new Container(
+    showModalBottomSheet(context: context, elevation: 40, enableDrag: true, barrierColor: Colors.transparent, backgroundColor: Colors.transparent, builder: (BuildContext bc) {
+      return new Padding(
+        padding: EdgeInsets.only(left: 15, right: 15, bottom: MediaQuery.of(context).size.width/7, top: 20),
+        child: Container(
           decoration: new BoxDecoration(
-              color: Colors.white,
-              borderRadius: new BorderRadius.only(
-                  topLeft: const Radius.circular(10.0),
-                  topRight: const Radius.circular(10.0))),
-          child: new Wrap(
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.only(top:50, bottom:50),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    InkWell(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(Icons.camera, size: 35, color: Colors.deepPurple,),
-                          Padding(
-                              padding: EdgeInsets.only(top:15),
-                              child: Text('Camera', style: TextStyle(fontSize: 16),)),
-                        ],
+            color: Colors.transparent,
+            borderRadius: new BorderRadius.circular(15),
+          ),
+          //could change this to Color(0xFF737373),
+          //so you don't have to change MaterialApp canvasColor
+          child: new Container(
+            decoration: new BoxDecoration(
+                color: Colors.white,
+                borderRadius: new BorderRadius.circular(15)),
+            child: new Wrap(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.only(top:50, bottom:50),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Icon(Icons.camera, size: 35, color: Colors.deepPurple,),
+                            Padding(
+                                padding: EdgeInsets.only(top:15),
+                                child: Text('Camera', style: TextStyle(fontSize: 16),)),
+                          ],
+                        ),
+                        onTap: (){
+                          cameraPicker();
+                        },
                       ),
-                      onTap: (){
-                        cameraPicker();
-                      },
-                    ),
-                    InkWell(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Icon(Icons.image,size: 35, color: Colors.lightBlue,),
-                          Padding(
-                            padding: EdgeInsets.only(top:15),
-                            child: Text('Gallery', style: TextStyle(fontSize: 16))),
-                        ],
+                      InkWell(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Icon(Icons.image,size: 35, color: Colors.lightBlue,),
+                            Padding(
+                                padding: EdgeInsets.only(top:15),
+                                child: Text('Gallery', style: TextStyle(fontSize: 16))),
+                          ],
+                        ),
+                        onTap: (){
+                          imagePicker();
+                        },
                       ),
-                      onTap: (){
-                        imagePicker();
-                      },
-                    ),
-                  ],
-                ),
-              )
-            ],),),
+                    ],
+                  ),
+                )
+              ],),
+          ),
+        ),
       );
     });
   }
