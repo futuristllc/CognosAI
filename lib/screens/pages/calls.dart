@@ -78,7 +78,8 @@ class _CallsListState extends State<CallsList> {
       calls.sort((a, b) => b.time.compareTo(a.time));
       call_logs = calls;
     });
-    return call_logs != null ? Scaffold(
+    if (call_logs != null) {
+      return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
         padding: EdgeInsets.only(top: 7),
@@ -91,19 +92,24 @@ class _CallsListState extends State<CallsList> {
                   new Padding(
                     padding: EdgeInsets.symmetric(vertical: 5),
                     child: ListTile(
+                      //var url = _currentUserId == call_logs[i].receiverId.toString()? call_logs[i].callerPic: call_logs[i].receiverPic;
                       leading: new CircleAvatar(
                         foregroundColor: Theme.of(context).primaryColor,
                         backgroundColor: Colors.grey,
-                        backgroundImage: call_logs[i].receiverPic!=null?
-                        NetworkImage(call_logs[i].receiverPic): AssetImage('assets/images/user.png'),
-                        radius: 22,
+                        backgroundImage: _currentUserId==call_logs[i].receiverId ?
+                        call_logs[i].callerPic!=null?NetworkImage(call_logs[i].callerPic):
+                      AssetImage('assets/images/user.png') :
+                          call_logs[i].receiverPic!=null?NetworkImage(call_logs[i].receiverPic):
+                          AssetImage('assets/images/user.png'),
+                      radius: 22,
+
                       ),
                       title: new Column(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           new Text(
-                            call_logs[i].receiverName,
+                            _currentUserId == call_logs[i].receiverId.toString()? call_logs[i].callerName: call_logs[i].receiverName,
                             style: new TextStyle(fontWeight: FontWeight.bold),
                           ),
                           new Padding(
@@ -111,10 +117,9 @@ class _CallsListState extends State<CallsList> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
-                                call_logs[i].hasDialled=='false'?Icon(Icons.call_received, size: 18, color: Colors.green,):
-                                call_logs[i].hasDialled=='true'?Icon(Icons.call_received, size: 18, color: Colors.red,):
+                                _currentUserId==call_logs[i].receiverId ?
+                                Icon(Icons.call_received, size: 18, color: Colors.green,):
                                 Icon(Icons.call_made, size: 18, color: Colors.green,),
-
                                 Padding(padding: EdgeInsets.only(left: 3,),
                                   child: Text(call_logs[i].time, style: new TextStyle(color: Colors.grey, fontSize: 16.0),),
                                 ),
@@ -174,8 +179,9 @@ class _CallsListState extends State<CallsList> {
           ),
         ),
       ),
-    ):
-    Scaffold(
+    );
+    } else {
+      return Scaffold(
       backgroundColor: Colors.white,
       body:  Container(child: Center(
           child: Column(
@@ -196,5 +202,6 @@ class _CallsListState extends State<CallsList> {
           )
       )),
     );
+    }
   }
 }

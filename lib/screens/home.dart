@@ -18,6 +18,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:cognos/screens/dashboard/dashboard.dart';
 
 class Home extends StatefulWidget {
 
@@ -119,17 +120,7 @@ class _HomeState extends State<Home> {
       });
     });
     return PickupLayout(
-      scaffold: WillPopScope(
-        onWillPop: () async {
-          removeState().then((_){
-            return false;
-          });
-          //dispose();
-          Navigator.of(context).dispose();
-          //return true;
-        },
-        key: _scaffoldKey,
-        child: Scaffold(
+      scaffold: Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.lightBlue,
           title: Text(_page == 0 ? 'User Profile ': 'Cognos AI', style: TextStyle(color: Colors.white, fontFamily: 'Cookie', fontSize: 30),),
@@ -137,37 +128,48 @@ class _HomeState extends State<Home> {
           elevation: 2,
           automaticallyImplyLeading: false,
         ),
-        body: Center(
-          child: PageView(
-            controller: _myPage,
-            onPageChanged: (int) {
-              print('Page Changes to index $int');
-              setState(() {
-                _page = int;
+        body: WillPopScope(
+            onWillPop: () async {
+              removeState().then((_){
+                return false;
               });
+              //dispose();
+              Navigator.of(context).dispose();
+              //return true;
             },
-            children: <Widget>[
-              Center(
-                child: Container(
-                  child: UserPage(),
-                  //UserProfile(),
-                ),
+            key: _scaffoldKey,
+            child:Center(
+              child: PageView(
+                controller: _myPage,
+                onPageChanged: (int) {
+                  print('Page Changes to index $int');
+                  setState(() {
+                    _page = int;
+                  });
+                },
+                children: <Widget>[
+                  Center(
+                    child: Container(
+                      child: UserPage(),
+                      //UserProfile(),
+                    ),
+                  ),
+                  Center(
+                    child: ChatsList(),
+                  ),
+                  Center(
+                    child: Container(
+                      child: Status(),
+                    ),
+                  ),
+                  Center(
+                    child: Container(
+                      child: CallsList(),
+                    ),
+                  ),
+                ],
               ),
-              Center(
-                child: ChatsList(),
-              ),
-              Center(
-                child: Container(
-                  child: Status(),
-                ),
-              ),
-              Center(
-                child: Container(
-                  child: CallsList(),
-                ),
-              ),
-            ],
-          ),
+            ),
         ),
         bottomNavigationBar: BottomAppBar(
           shape: const CircularNotchedRectangle(),
@@ -250,85 +252,109 @@ class _HomeState extends State<Home> {
           ),
         ),
         floatingActionButton: _page!=0 ? FloatingActionButton(
-          onPressed: (){
-            if(_page==1){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ContactSearch()));
-            }
-            else if(_page==2){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => StatusPicker()));
-            }
-            else {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => CallSearch()));
-            }
+            onPressed: (){
+              if(_page==1){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ContactSearch()));
+              }
+              else if(_page==2){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => StatusPicker()));
+              }
+              else {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => CallSearch()));
+              }
 
-          },
-          tooltip: 'Add Post',
-          child: _page==1?Icon(Icons.message):(_page==2)?Icon(Icons.add_photo_alternate):Icon(Icons.add_call)
+            },
+            tooltip: 'Add Post',
+            child: _page==1?Icon(Icons.message):(_page==2)?Icon(Icons.add_photo_alternate):Icon(Icons.add_call)
         ):null,
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
 
         drawer: Drawer(
-          child: SafeArea(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 15, bottom: 5),
-                  child:  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'COGNOS ',
-                        style: GoogleFonts.aldrich(
-                          textStyle: TextStyle(color: Colors.lightBlue, letterSpacing: .5, fontWeight: FontWeight.bold, fontSize: 20),
-                        ),
+            child: SafeArea(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 15, bottom: 5),
+                      child:  Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'COGNOS ',
+                            style: GoogleFonts.aldrich(
+                              textStyle: TextStyle(color: Colors.lightBlue, letterSpacing: .5, fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                          ),
+                          Text(
+                            'by Futurist',
+                            style: TextStyle(color: Colors.grey, fontSize: 20),
+                          )
+                        ],
                       ),
-                      Text(
-                        'by Futurist',
-                        style: TextStyle(color: Colors.grey, fontSize: 20),
-                      )
-                    ],
-                  ),
-                ),
-                Divider(),
-                Padding(
-                  padding: EdgeInsets.only(top: 10, bottom: 20),
-                  child:  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text(
-                        'View our ',
-                        style: GoogleFonts.aldrich(
-                          textStyle: TextStyle(color: Colors.lightBlue, letterSpacing: .5, fontWeight: FontWeight.bold, fontSize: 15),
-                        ),
+                    ),
+                    Divider(),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10, bottom: 20),
+                      child:  Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'View our ',
+                            style: GoogleFonts.aldrich(
+                              textStyle: TextStyle(color: Colors.lightBlue, letterSpacing: .5, fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                          ),
+                          Text(
+                            'Git',
+                            style: GoogleFonts.aldrich(
+                              textStyle: TextStyle(color: Colors.grey, letterSpacing: .5, fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                          ),
+                          Text(
+                            'Hub',
+                            style: GoogleFonts.aldrich(
+                              textStyle: TextStyle(color: Colors.black, letterSpacing: .5, fontWeight: FontWeight.bold, fontSize: 15),
+                            ),
+                          ),
+                        ],
                       ),
-                      Text(
-                        'Git',
-                        style: GoogleFonts.aldrich(
-                          textStyle: TextStyle(color: Colors.grey, letterSpacing: .5, fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    Divider(),
+                    Padding(
+                      padding: EdgeInsets.only(top: 10, bottom: 10),
+                      child: InkWell(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.bubble_chart,
+                              color: Colors.grey,
+                            ),
+                            Text(
+                              'Analyzer',
+                              style: TextStyle(color: Colors.grey, fontSize: 15),
+                            ),
+                          ],
                         ),
+                        onTap: (){
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => DashBoard()));
+                        },
                       ),
-                      Text(
-                        'Hub',
-                        style: GoogleFonts.aldrich(
-                          textStyle: TextStyle(color: Colors.black, letterSpacing: .5, fontWeight: FontWeight.bold, fontSize: 15),
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                    Divider(),
+                  ],
                 )
-              ],
             )
-          )
         ),
         // Disable opening the drawer with a swipe gesture.
         drawerEnableOpenDragGesture: true,
         drawerScrimColor: Colors.lightBlue,
       ),
-    ));
+    );
   }
 
   void choiceAction(String choice){

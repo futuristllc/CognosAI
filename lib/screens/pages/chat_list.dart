@@ -103,7 +103,7 @@ class _ChatsListState extends State<ChatsList> {
                           new Icon(
                             Icons.circle,
                             size: 10,
-                            color: userList[i].state== "Online" ? Colors.green: Colors.grey.shade300,
+                            color: userList[i].state== "online" ? Colors.green: Colors.grey.shade300,
                           )
                         ],
                       ),
