@@ -99,6 +99,8 @@ flutter:
     - assets/images/
     - data/
     - assets/fonts/
+    - assets/emotion_ai.tflite
+    - assets/emotion_ai.txt
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

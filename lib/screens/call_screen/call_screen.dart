@@ -18,7 +18,6 @@ import 'package:native_screenshot/native_screenshot.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:tflite/tflite.dart';
 import 'package:toast/toast.dart';
 
 class CallScreen extends StatefulWidget {
@@ -63,42 +62,7 @@ class _CallScreenState extends State<CallScreen> {
     super.initState();
     addPostFrameCallback();
     initializeAgora();
-    _loading = true;
     checkScreenshot();
-    loadModel().then((value) {
-      setState(() {
-        _loading = false;
-      });
-    });
-    //timer = Timer.periodic(Duration(seconds: 10), (Timer t) => _takeScreenShot());
-  }
-
-  static Future<String> loadModel() async {
-    return Tflite.loadModel(
-      model: "assets/emotion_ai.tflite",
-      labels: "assets/emotion_ai.txt",
-    );
-  }
-
-  Future<void> classifyImage(File image) async {
-    var output = await Tflite.runModelOnImage(
-      path: image.path,
-      numResults: 4,
-      threshold: 0.005,
-      imageMean: 127.5,
-      imageStd: 127.5,
-    );
-    setState(() {
-      _img1 = image;
-      _loading = false;
-      _outputs = output;
-    });
-    print("inside classify image *********************************");
-    print((_outputs[0]["label"]).runtimeType);
-    print(_outputs[0]["label"]);
-    faceExpression.add(_outputs[0]["label"].toString());
-    print('${faceExpression}');
-    Toast.show('${faceExpression}', context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
   }
 
   checkScreenshot(){
@@ -118,62 +82,6 @@ class _CallScreenState extends State<CallScreen> {
     });
   }
 
-  Future<ui.Image> loadImage(File image) async {
-    var img = await image.readAsBytes();
-    return await decodeImageFromList(img);
-  }
-
-
-  Future getImage(String screenShotPath) async {
-    _img2 = File(screenShotPath);
-    setState(() {
-      rect = List<Rect>();
-    });
-
-    var dirPath;
-    createFolderInAppDocDir('CognosAI','FaceData').then((String path) async {
-      setState(() {
-        dirPath = path;
-      });
-      print('Path: $dirPath');
-
-      var visionImage = FirebaseVisionImage.fromFile(_img2);
-      var options = new FaceDetectorOptions(
-        enableTracking: true,
-        enableLandmarks: true,
-        enableClassification: true,
-        mode: FaceDetectorMode.accurate,
-      );
-      var faceDetector = FirebaseVision.instance.faceDetector(options);
-      List<Face> faces = await faceDetector.processImage(visionImage);
-      int i = 0;
-      String meetingid = 'meeting';
-      for (Face f in faces) {
-        rect.add(f.boundingBox);
-        print(rect);
-        i++;
-        print('Probabilities: ${f.leftEyeOpenProbability},${f.rightEyeOpenProbability},${f.headEulerAngleY},');
-        print('${f.headEulerAngleZ},${f.smilingProbability},${f.trackingId}');
-        File croppedFile = await FlutterNativeImage.cropImage(_img2.path, f.boundingBox.left.toInt(),
-            f.boundingBox.top.toInt(), f.boundingBox.width.toInt(), f.boundingBox.height.toInt());
-        DateTime now = new DateTime.now();
-        DateTime date = new DateTime(now.year, now.month, now.day ,now.hour,now.minute , now.second);
-        print(formatDate(date, [yyyy, '', mm, '', dd ,'',HH, '', nn, '_', ss]));
-        var formatted_date = formatDate(date, [yyyy, '_', mm, '_', dd ,'_',HH, '_', nn, '_', ss]);
-        croppedFile.copy('${dirPath}/FaceData/${meetingid}_${i}_${formatted_date.toString()}.jpg');
-        print('Cropped File Path: ${croppedFile}');
-        Toast.show('Image Cropped', context, duration: Toast.LENGTH_SHORT, gravity:  Toast.BOTTOM);
-        classifyImage(croppedFile);
-      }
-
-      loadImage(_img2).then((img) {
-        setState(() {
-          this.image = img;
-        });
-      });
-    });
-  }
-
   Future<void> _takeScreenShot() async {
     print('in take SS');
     var _path;
@@ -185,24 +93,6 @@ class _CallScreenState extends State<CallScreen> {
     String screenShotPath = await NativeScreenshot.takeScreenshot();
     print(screenShotPath);
     print('captured');
-    getImage(screenShotPath);
-    /*screenshotController
-        .capture(delay: Duration(milliseconds: 10))
-        .then((File image) async {
-      print("Capture Done");
-      createFolderInAppDocDir('CognosAI','Screenshots').then((String result){
-        setState(() {
-          _path = result;
-          print('Path: $_path');
-          image.copy('$_path/FaceData/${formattedDate}.jpg');
-        });
-      });
-      final result =
-      await ImageGallerySaver.saveImage(image.readAsBytesSync());
-      print("File Saved to Gallery");
-    }).catchError((onError) {
-      print(onError);
-    });*/
   }
 
   static Future<String> createFolderInAppDocDir(String folderName, String subFolderName) async {
@@ -728,7 +618,6 @@ class _CallScreenState extends State<CallScreen> {
     AgoraRtcEngine.leaveChannel();
     AgoraRtcEngine.destroy();
     callStreamSubscription.cancel();
-    Tflite.close();
     super.dispose();
   }
 
@@ -741,7 +630,6 @@ class _CallScreenState extends State<CallScreen> {
           children: <Widget>[
             _viewRows(),
             // _panel(),
-
             _toolbar(),
           ],
         ),

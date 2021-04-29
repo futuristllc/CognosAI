@@ -41,7 +41,7 @@ class _VoiceCallState extends State<VoiceCall> {
   static final _users = <int>[];
   final _infoStrings = <String>[];
   bool muted = false;
-  bool speaker = true;
+  bool speaker = false;
 
   final CallMethods callMethods = CallMethods();
   String _currentUserId;
@@ -350,7 +350,7 @@ class _VoiceCallState extends State<VoiceCall> {
               RawMaterialButton(
                 onPressed: _onToggleSpeaker,
                 child: Icon(
-                  speaker ? Icons.volume_up : Icons.volume_off,
+                  speaker ? Icons.volume_off : Icons.volume_up,
                   color: speaker ? Colors.blueAccent : Colors.white,
                   size: 20.0,
                 ),
