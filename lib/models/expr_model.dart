@@ -1,23 +1,23 @@
 class Expr {
-  String callerId;
+  String uid;
   String time;
   String result;
 
   Expr({
-    this.callerId, this.time, this.result,
+    this.uid, this.time, this.result,
   });
 
   // to map
   Map<String, dynamic> toMap(Expr expr) {
     Map<String, dynamic> exprmap = Map();
-    exprmap["caller_id"] = expr.callerId;
+    exprmap["uid"] = expr.uid;
     exprmap["time"] = expr.time;
     exprmap["result"] = expr.result;
     return exprmap;
   }
 
   Expr.fromMap(Map exprmap) {
-    this.callerId = exprmap["caller_id"];
+    this.uid = exprmap["uid"];
     this.time = exprmap["time"];
     this.result = exprmap["result"];
   }

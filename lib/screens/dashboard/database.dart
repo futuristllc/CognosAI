@@ -8,6 +8,7 @@ class Database extends StatefulWidget {
 
 class _DatabaseState extends State<Database> {
 
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -48,7 +49,7 @@ class _DatabaseState extends State<Database> {
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
                                     Text(
-                                      'Time:',
+                                      'Time: ',
                                       style: TextStyle(color: Colors.white, fontSize: 15,fontWeight: FontWeight.bold),
                                     ),
                                     Text(
@@ -57,16 +58,16 @@ class _DatabaseState extends State<Database> {
                                     ),
                                   ],
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      'Prediction:',
+                                      'Attentive/Non Attentive: ',
                                       style: TextStyle(color: Colors.white, fontSize: 15,fontWeight: FontWeight.bold),
                                     ),
                                     Text(
-                                      '70% Laughing, 30% Neutral',
+                                      'Non Attentive',
                                       style: TextStyle(color: Colors.white, fontSize: 15),
                                     ),
                                   ],
