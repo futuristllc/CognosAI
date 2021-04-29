@@ -27,7 +27,7 @@ class PickupScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              "Incoming Call...",
+              "Incoming ${call.type.toLowerCase()} call...",
               style: TextStyle(
                   fontSize: 30,
                   color: Colors.white
@@ -52,15 +52,29 @@ class PickupScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                IconButton(
+                RawMaterialButton(
+                  onPressed: () async {
+                    await callMethods.endCall(call: call);
+                  },
+                  child: Icon(
+                    Icons.call_end,
+                    color: Colors.redAccent,
+                    size: 25.0,
+                  ),
+                  shape: CircleBorder(),
+                  elevation: 2.0,
+                  fillColor: Colors.white,
+                  padding: const EdgeInsets.all(15.0),
+                ),
+                /*IconButton(
                   icon: Icon(Icons.call_end),
                   color: Colors.redAccent,
                   onPressed: () async {
                     await callMethods.endCall(call: call);
                   },
-                ),
+                ),*/
                 SizedBox(width: 25),
-                IconButton(
+                /*IconButton(
                   icon: Icon(Icons.call),
                   color: Colors.green,
                   onPressed: () async =>
@@ -73,6 +87,25 @@ class PickupScreen extends StatelessWidget {
                     ),
                   )
                       : {},
+                ),*/
+                RawMaterialButton(
+                onPressed: () async =>
+                  await Permissions.cameraAndMicrophonePermissionsGranted()
+                  ? Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CallScreen(call: call),
+                    ),
+                  ) : {},
+                  child: Icon(
+                    Icons.phone,
+                    color: Colors.green,
+                    size: 25.0,
+                  ),
+                  shape: CircleBorder(),
+                  elevation: 2.0,
+                  fillColor: Colors.white,
+                  padding: const EdgeInsets.all(15.0),
                 ),
               ],
             ),
@@ -90,7 +123,7 @@ class PickupScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              "Incoming Voice Call...",
+              "Incoming ${call.type.toLowerCase()} Call...",
               style: TextStyle(
                 fontSize: 30,
                 color: Colors.white,

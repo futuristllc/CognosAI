@@ -128,6 +128,7 @@ class _HomeState extends State<Home> {
           elevation: 2,
           automaticallyImplyLeading: false,
         ),
+        key: _scaffoldKey,
         body: WillPopScope(
             onWillPop: () async {
               removeState().then((_){
@@ -137,7 +138,6 @@ class _HomeState extends State<Home> {
               Navigator.of(context).dispose();
               //return true;
             },
-            key: _scaffoldKey,
             child:Center(
               child: PageView(
                 controller: _myPage,
@@ -296,7 +296,7 @@ class _HomeState extends State<Home> {
                     ),
                     Divider(),
                     Padding(
-                      padding: EdgeInsets.only(top: 10, bottom: 20),
+                      padding: EdgeInsets.only(top: 20, bottom: 20),
                       child:  Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -323,9 +323,9 @@ class _HomeState extends State<Home> {
                       ),
                     ),
                     Divider(),
-                    Padding(
+                    InkWell(
+                      child: Padding(
                       padding: EdgeInsets.only(top: 10, bottom: 10),
-                      child: InkWell(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -336,14 +336,14 @@ class _HomeState extends State<Home> {
                             ),
                             Text(
                               'Analyzer',
-                              style: TextStyle(color: Colors.grey, fontSize: 15),
+                              style: TextStyle(color: Colors.grey, fontSize: 25),
                             ),
                           ],
                         ),
-                        onTap: (){
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => DashBoard()));
-                        },
                       ),
+                      onTap: (){
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => DashBoard()));
+                      },
                     ),
                     Divider(),
                   ],
@@ -359,6 +359,8 @@ class _HomeState extends State<Home> {
 
   void choiceAction(String choice){
     if(choice == Constants.Logout) {
+
+      removeState();
       /*_firebaseAuth.signOut();
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => App()));*/

@@ -81,7 +81,6 @@ class _ChatScreenState extends State<ChatScreen> {
             profileurl: prourl,
           );
         });
-
       });
     });
   }
