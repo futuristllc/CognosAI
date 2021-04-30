@@ -234,7 +234,7 @@ class _ChatScreenState extends State<ChatScreen> {
   getMessage(Message message) {
 
     return message.type == MESSAGE_TYPE_IMAGE
-        ? InkWell(child: Hero(tag: "imageView", child: CachedImage(message.photoUrl)), onTap: (){viewImage(context, message.photoUrl);})
+        ? InkWell(child: Hero(tag: "imageView_${message.timestamp.toString()}", child: CachedImage(message.photoUrl)), onTap: (){viewImage(context, message.photoUrl, "imageView_${message.timestamp.toString()}");})
         : message.type == MESSAGE_TYPE_DOC? Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -702,11 +702,12 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
-  void viewImage(BuildContext context, String photoUrl) {
+  void viewImage(BuildContext context, String photoUrl, String time) {
     Navigator.of(context).push(MaterialPageRoute(
       builder:(context) => Scaffold(
         body: Center(
           child: Hero(
+            tag: time,
             child: CachedImage(photoUrl),
           ),
         )

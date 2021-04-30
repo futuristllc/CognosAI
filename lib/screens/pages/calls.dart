@@ -75,7 +75,7 @@ class _CallsListState extends State<CallsList> {
   Widget build(BuildContext context) {
 
     fetchContacts(currentUser).then((calls){
-      calls.sort((a, b) => b.time.compareTo(a.time));
+      calls.sort((a, b) => b.date.compareTo(a.date));
       call_logs = calls;
     });
     if (call_logs != null) {

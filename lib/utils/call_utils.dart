@@ -20,6 +20,7 @@ class CallUtils {
       receiverPic: to.profileurl,
       type: type.toString(),
       time: DateFormat("H:m").format(DateTime.now()).toString(),
+      date: DateFormat('yyyy-MM-dd').format(DateTime.now()),
       channelId: Random().nextInt(1000).toString(),
     );
 
